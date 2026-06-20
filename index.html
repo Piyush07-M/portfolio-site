@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Piyush Mandal – AI Product Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Sora', sans-serif;
+      background: #ffffff;
+      color: #1a1a1a;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-15px); }
+    }
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(76,175,255,0.15), inset 0 0 20px rgba(76,175,255,0.05); }
+      50%       { box-shadow: 0 0 40px rgba(76,175,255,0.3),  inset 0 0 30px rgba(76,175,255,0.1); }
+    }
+
+    .scroll-hint { animation: float 2.5s ease-in-out infinite; }
+
+    /* Ambient orbs */
+    .orb { position: absolute; border-radius: 50%; pointer-events: none; }
+    .orb-1 { top:-300px; left:-300px; width:600px; height:600px; background:radial-gradient(circle,rgba(37,99,235,0.12) 0%,transparent 70%); filter:blur(80px); animation:float 6s ease-in-out infinite; }
+    .orb-2 { bottom:-200px; right:-200px; width:500px; height:500px; background:radial-gradient(circle,rgba(124,58,237,0.1) 0%,transparent 70%); filter:blur(80px); animation:float 7s ease-in-out infinite 1s; }
+    .orb-3 { top:50%; left:50%; width:400px; height:400px; background:radial-gradient(circle,rgba(236,72,153,0.08) 0%,transparent 70%); filter:blur(100px); animation:float 8s ease-in-out infinite 2s; }
+
+    /* Nav */
+    nav { position:fixed; top:0; left:0; right:0; z-index:1000; backdrop-filter:blur(20px); background:rgba(255,255,255,0.8); border-bottom:1px solid rgba(37,99,235,0.1); padding:16px 48px; display:flex; justify-content:space-between; align-items:center; }
+    .nav-logo { font-family:'Space Mono',monospace; font-size:16px; font-weight:700; letter-spacing:2px; background:linear-gradient(120deg,#2563eb,#7c3aed); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; text-decoration:none; }
+    .nav-links { display:flex; gap:48px; }
+    .nav-link { font-size:13px; text-decoration:none; color:#666; font-weight:500; transition:all 0.3s ease; }
+    .nav-link-work:hover    { color:#2563eb; text-shadow:0 0 20px rgba(37,99,235,0.3); }
+    .nav-link-about:hover   { color:#7c3aed; text-shadow:0 0 20px rgba(124,58,237,0.3); }
+    .nav-link-contact:hover { color:#ec4899; text-shadow:0 0 20px rgba(236,72,153,0.3); }
+    .btn-nav { padding:10px 24px; background:linear-gradient(120deg,#2563eb,#7c3aed); color:white; border-radius:6px; text-decoration:none; font-size:13px; font-weight:700; transition:all 0.3s ease; }
+    .btn-nav:hover { transform:translateY(-2px); box-shadow:0 12px 40px rgba(37,99,235,0.25); }
+
+    /* Buttons */
+    .btn-primary { display:inline-block; padding:14px 36px; background:linear-gradient(120deg,#2563eb,#7c3aed); color:white; border-radius:8px; text-decoration:none; font-weight:700; font-size:14px; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1); cursor:pointer; border:none; font-family:'Sora',sans-serif; }
+    .btn-primary:hover { transform:translateY(-4px); box-shadow:0 20px 60px rgba(37,99,235,0.3); }
+    .btn-secondary { display:inline-block; padding:14px 36px; border:2px solid #2563eb; color:#2563eb; border-radius:8px; text-decoration:none; font-weight:700; font-size:14px; transition:all 0.3s ease; cursor:pointer; background:rgba(37,99,235,0.05); }
+    .btn-secondary:hover { border-color:#7c3aed; color:#7c3aed; background:rgba(124,58,237,0.1); box-shadow:0 0 30px rgba(37,99,235,0.2); }
+
+    /* Project cards */
+    .project-card { background:white; border:1px solid rgba(37,99,235,0.15); border-radius:12px; overflow:hidden; transition:all 0.4s cubic-bezier(0.23,1,0.32,1); cursor:pointer; box-shadow:0 4px 20px rgba(0,0,0,0.05); }
+    .project-card:hover { border-color:#2563eb; transform:translateY(-12px); box-shadow:0 30px 60px rgba(37,99,235,0.15); }
+
+    /* Tags */
+    .tag { display:inline-block; padding:6px 12px; background:rgba(37,99,235,0.1); color:#2563eb; font-size:11px; border-radius:4px; font-weight:500; border:1px solid rgba(37,99,235,0.2); }
+
+    /* Service cards */
+    .service-card { background:white; border:1px solid rgba(37,99,235,0.1); border-radius:12px; padding:40px; transition:all 0.3s ease; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.04); }
+    .service-card:hover { border-color:#2563eb; background:linear-gradient(135deg,rgba(37,99,235,0.05),rgba(124,58,237,0.03)); transform:translateY(-4px); box-shadow:0 20px 50px rgba(37,99,235,0.12); }
+
+    /* Form */
+    .form-input { width:100%; padding:14px 16px; border:1px solid rgba(37,99,235,0.2); background:rgba(37,99,235,0.05); border-radius:8px; font-size:14px; font-family:'Sora',sans-serif; color:#1a1a1a; transition:all 0.3s ease; resize:vertical; }
+    .form-input:focus { border-color:#2563eb; background:rgba(37,99,235,0.12); outline:none; box-shadow:0 0 0 3px rgba(37,99,235,0.1); }
+    .form-input::placeholder { color:#bbb; }
+    .btn-submit { width:100%; padding:14px 32px; background:linear-gradient(120deg,#2563eb,#7c3aed); color:white; border:none; border-radius:8px; font-weight:700; font-size:14px; cursor:pointer; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1); font-family:'Sora',sans-serif; }
+    .btn-submit:hover { transform:translateY(-4px); box-shadow:0 20px 50px rgba(37,99,235,0.3); }
+    .btn-submit:disabled { opacity:0.7; cursor:not-allowed; transform:none !important; box-shadow:none !important; }
+    .form-success { display:none; padding:16px; background:rgba(37,99,235,0.12); border:1px solid #2563eb; color:#2563eb; border-radius:8px; font-weight:600; text-align:center; font-size:13px; }
+    .form-success.show { display:block; }
+
+    /* Contact links */
+    .contact-link { text-decoration:none; font-weight:600; font-size:13px; transition:all 0.3s ease; }
+    .cl-linkedin { color:#2563eb; } .cl-linkedin:hover { color:#1a1a1a; text-shadow:0 0 20px rgba(37,99,235,0.3); }
+    .cl-email    { color:#7c3aed; } .cl-email:hover    { color:#1a1a1a; text-shadow:0 0 20px rgba(124,58,237,0.3); }
+    .cl-twitter  { color:#ec4899; } .cl-twitter:hover  { color:#1a1a1a; text-shadow:0 0 20px rgba(236,72,153,0.3); }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      nav { padding:16px 24px; }
+      .nav-links { display:none; }
+      .hero-grid { grid-template-columns:1fr !important; }
+      .hero-visual { display:none; }
+      .hero-h1 { font-size:44px !important; }
+      .work-grid, .about-grid, .services-grid { grid-template-columns:1fr !important; }
+      .stats-grid { grid-template-columns:repeat(2,1fr) !important; }
+      section { padding-left:24px !important; padding-right:24px !important; }
+      .section-h2 { font-size:36px !important; }
+    }
+  </style>
+</head>
+<body>
+<div style="width:100%;background:#fff;position:relative;overflow:hidden;">
+
+  <!-- Ambient Background -->
+  <div style="position:fixed;inset:0;z-index:0;pointer-events:none;">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="#" class="nav-logo">PM.AI</a>
+    <div class="nav-links">
+      <a href="#work"    class="nav-link nav-link-work">Work</a>
+      <a href="#about"   class="nav-link nav-link-about">About</a>
+      <a href="#contact" class="nav-link nav-link-contact">Contact</a>
+    </div>
+    <a href="#contact" class="btn-nav">Let's Talk</a>
+  </nav>
+
+  <!-- Hero -->
+  <section style="padding-top:140px;padding-bottom:100px;padding-left:48px;padding-right:48px;min-height:100vh;display:flex;align-items:center;background:linear-gradient(135deg,#fff 0%,#f8f9ff 50%,#faf5ff 100%);position:relative;overflow:hidden;">
+    <div class="hero-grid" style="position:relative;z-index:2;max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1.2fr 0.8fr;gap:80px;align-items:center;">
+
+      <div>
+        <div style="font-family:'Space Mono',monospace;color:#2563eb;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;font-weight:700;">Next-Gen AI Products</div>
+        <h1 class="hero-h1" style="font-size:72px;font-weight:700;line-height:1.1;margin-bottom:28px;color:#1a1a1a;letter-spacing:-1.5px;">Ship AI That Millions Love</h1>
+        <p style="font-size:18px;color:#555;line-height:1.8;margin-bottom:40px;max-width:520px;">I architect intelligent systems that scale. From AI strategy to LLM engineering—building products that feel native, not artificial.</p>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;">
+          <a href="#work"    class="btn-primary">See My Work</a>
+          <a href="#contact" class="btn-secondary">Let's Connect</a>
+        </div>
+      </div>
+
+      <div class="hero-visual" style="position:relative;height:520px;">
+        <div class="scroll-hint" style="background:linear-gradient(135deg,rgba(37,99,235,0.1),rgba(124,58,237,0.08));border:1px solid rgba(37,99,235,0.2);border-radius:16px;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;backdrop-filter:blur(10px);">
+          <div style="position:absolute;inset:0;background:linear-gradient(135deg,transparent 0%,rgba(37,99,235,0.05) 100%);"></div>
+          <div style="text-align:center;z-index:2;">
+            <div style="font-size:140px;margin-bottom:20px;animation:float 3s ease-in-out infinite;">🧠</div>
+            <p style="font-size:13px;color:#2563eb;font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:1px;">Your Hero Image</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="position:absolute;bottom:32px;left:50%;transform:translateX(-50%);text-align:center;pointer-events:none;z-index:2;">
+      <div class="scroll-hint" style="font-size:24px;color:#2563eb;">↓</div>
+      <p style="font-size:11px;color:#2563eb;margin-top:8px;text-transform:uppercase;letter-spacing:1px;font-family:'Space Mono',monospace;">Scroll</p>
+    </div>
+  </section>
+
+  <!-- Featured Work -->
+  <section id="work" style="padding:140px 48px;background:linear-gradient(180deg,#fff 0%,#f8f9ff 50%,#fff 100%);position:relative;">
+    <div style="max-width:1200px;margin:0 auto;position:relative;z-index:2;">
+      <div style="margin-bottom:80px;">
+        <div style="font-family:'Space Mono',monospace;color:#2563eb;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;font-weight:700;">Featured Projects</div>
+        <h2 class="section-h2" style="font-size:56px;font-weight:700;line-height:1.1;color:#1a1a1a;">Work That Transforms</h2>
+      </div>
+
+      <div class="work-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:32px;">
+
+        <div class="project-card">
+          <div style="background:linear-gradient(135deg,rgba(37,99,235,0.12),rgba(124,58,237,0.08));height:300px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
+            <div style="font-size:100px;opacity:0.3;">🚀</div>
+            <div style="position:absolute;inset:0;background:linear-gradient(135deg,transparent 50%,rgba(37,99,235,0.08) 100%);"></div>
+          </div>
+          <div style="padding:40px;">
+            <div style="font-family:'Space Mono',monospace;color:#2563eb;font-size:11px;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;font-weight:700;">AI Career Platform</div>
+            <h3 style="font-size:24px;font-weight:700;margin-bottom:12px;color:#1a1a1a;line-height:1.3;">Pathvio.in</h3>
+            <p style="font-size:14px;color:#666;line-height:1.7;margin-bottom:24px;">AI-powered career discovery using LLMs and RAG. Intelligent role matching for millions seeking clarity.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <span class="tag">LLM</span>
+              <span class="tag">RAG</span>
+              <span class="tag">Career Tech</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div style="background:linear-gradient(135deg,rgba(37,99,235,0.12),rgba(124,58,237,0.08));height:300px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
+            <div style="font-size:100px;opacity:0.3;">🛒</div>
+            <div style="position:absolute;inset:0;background:linear-gradient(135deg,transparent 50%,rgba(37,99,235,0.08) 100%);"></div>
+          </div>
+          <div style="padding:40px;">
+            <div style="font-family:'Space Mono',monospace;color:#2563eb;font-size:11px;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;font-weight:700;">E-Commerce AI</div>
+            <h3 style="font-size:24px;font-weight:700;margin-bottom:12px;color:#1a1a1a;line-height:1.3;">Brantanos Experience</h3>
+            <p style="font-size:14px;color:#666;line-height:1.7;margin-bottom:24px;">AI-driven checkout with intelligent recommendations. 35% less abandonment, 22% higher conversion.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <span class="tag">UX</span>
+              <span class="tag">ML</span>
+              <span class="tag">E-Commerce</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section style="padding:100px 48px;background:linear-gradient(90deg,rgba(37,99,235,0.05),rgba(124,58,237,0.05));border-top:1px solid rgba(37,99,235,0.1);border-bottom:1px solid rgba(37,99,235,0.1);position:relative;">
+    <div style="max-width:1200px;margin:0 auto;position:relative;z-index:2;">
+      <div class="stats-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:48px;text-align:center;">
+        <div>
+          <div style="font-size:48px;font-weight:700;background:linear-gradient(120deg,#2563eb,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;font-family:'Space Mono',monospace;">5+</div>
+          <p style="font-size:13px;color:#888;text-transform:uppercase;letter-spacing:1px;font-weight:500;">Years</p>
+        </div>
+        <div>
+          <div style="font-size:48px;font-weight:700;background:linear-gradient(120deg,#2563eb,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;font-family:'Space Mono',monospace;">20+</div>
+          <p style="font-size:13px;color:#888;text-transform:uppercase;letter-spacing:1px;font-weight:500;">Products</p>
+        </div>
+        <div>
+          <div style="font-size:48px;font-weight:700;background:linear-gradient(120deg,#2563eb,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;font-family:'Space Mono',monospace;">100M+</div>
+          <p style="font-size:13px;color:#888;text-transform:uppercase;letter-spacing:1px;font-weight:500;">Users</p>
+        </div>
+        <div>
+          <div style="font-size:48px;font-weight:700;background:linear-gradient(120deg,#2563eb,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;font-family:'Space Mono',monospace;">15+</div>
+          <p style="font-size:13px;color:#888;text-transform:uppercase;letter-spacing:1px;font-weight:500;">Tech Stack</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" style="padding:140px 48px;background:white;position:relative;">
+    <div style="max-width:1200px;margin:0 auto;position:relative;z-index:2;">
+      <div class="about-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:start;">
+
+        <div>
+          <div style="font-family:'Space Mono',monospace;color:#2563eb;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;font-weight:700;">About</div>
+          <h2 class="section-h2" style="font-size:48px;font-weight:700;line-height:1.1;margin-bottom:28px;color:#1a1a1a;">AI-Native Product Thinking</h2>
+          <p style="font-size:16px;color:#555;line-height:1.8;margin-bottom:28px;">I don't build AI features. I architect AI-native products. Every decision—from UX to infrastructure—optimizes for intelligence, not just technology.</p>
+          <p style="font-size:16px;color:#555;line-height:1.8;">I've shipped with founders, scaled at scaleups, and guided enterprises. The result: products used by millions.</p>
+        </div>
+
+        <div style="background:linear-gradient(135deg,rgba(37,99,235,0.08),rgba(124,58,237,0.05));border:1px solid rgba(37,99,235,0.15);border-radius:12px;padding:48px;backdrop-filter:blur(10px);">
+          <div style="font-family:'Space Mono',monospace;color:#7c3aed;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:32px;font-weight:700;">Core Strengths</div>
+          <div style="display:flex;flex-direction:column;gap:24px;">
+
+            <div style="display:flex;gap:12px;align-items:flex-start;">
+              <div style="color:#2563eb;font-weight:700;margin-top:2px;font-size:18px;flex-shrink:0;">✦</div>
+              <div><div style="font-weight:700;color:#1a1a1a;margin-bottom:4px;">AI-Native Product Architecture</div><p style="font-size:13px;color:#888;">Design products where intelligence is the core, not an add-on.</p></div>
+            </div>
+
+            <div style="display:flex;gap:12px;align-items:flex-start;">
+              <div style="color:#2563eb;font-weight:700;margin-top:2px;font-size:18px;flex-shrink:0;">✦</div>
+              <div><div style="font-weight:700;color:#1a1a1a;margin-bottom:4px;">LLM Engineering &amp; Integration</div><p style="font-size:13px;color:#888;">Prompt engineering, fine-tuning, RAG pipelines that scale.</p></div>
+            </div>
+
+            <div style="display:flex;gap:12px;align-items:flex-start;">
+              <div style="color:#2563eb;font-weight:700;margin-top:2px;font-size:18px;flex-shrink:0;">✦</div>
+              <div><div style="font-weight:700;color:#1a1a1a;margin-bottom:4px;">Cross-Functional Leadership</div><p style="font-size:13px;color:#888;">Unite engineering, design, and business around AI excellence.</p></div>
+            </div>
+
+            <div style="display:flex;gap:12px;align-items:flex-start;">
+              <div style="color:#2563eb;font-weight:700;margin-top:2px;font-size:18px;flex-shrink:0;">✦</div>
+              <div><div style="font-weight:700;color:#1a1a1a;margin-bottom:4px;">Data-Driven Iteration</div><p style="font-size:13px;color:#888;">Measure, learn, evolve. Every decision backed by data.</p></div>
+            </div>
+
+            <div style="display:flex;gap:12px;align-items:flex-start;">
+              <div style="color:#2563eb;font-weight:700;margin-top:2px;font-size:18px;flex-shrink:0;">✦</div>
+              <div><div style="font-weight:700;color:#1a1a1a;margin-bottom:4px;">Go-to-Market for AI</div><p style="font-size:13px;color:#888;">Launch AI products that resonate, convert, and retain users.</p></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section style="padding:140px 48px;background:linear-gradient(180deg,#f8f9ff 0%,white 100%);position:relative;">
+    <div style="max-width:1200px;margin:0 auto;position:relative;z-index:2;">
+      <div style="margin-bottom:80px;">
+        <div style="font-family:'Space Mono',monospace;color:#7c3aed;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;font-weight:700;">Capabilities</div>
+        <h2 class="section-h2" style="font-size:56px;font-weight:700;line-height:1.1;color:#1a1a1a;">What I Deliver</h2>
+      </div>
+      <div class="services-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:32px;">
+        <div class="service-card">
+          <div style="font-size:40px;margin-bottom:20px;">🧠</div>
+          <h3 style="font-size:20px;font-weight:700;margin-bottom:12px;color:#1a1a1a;">AI Product Strategy</h3>
+          <p style="font-size:14px;color:#666;line-height:1.7;">Vision, roadmaps, and GTM strategies for intelligent products.</p>
+        </div>
+        <div class="service-card">
+          <div style="font-size:40px;margin-bottom:20px;">⚡</div>
+          <h3 style="font-size:20px;font-weight:700;margin-bottom:12px;color:#1a1a1a;">LLM Architecture</h3>
+          <p style="font-size:14px;color:#666;line-height:1.7;">Design and implement production-grade LLM systems.</p>
+        </div>
+        <div class="service-card">
+          <div style="font-size:40px;margin-bottom:20px;">🎯</div>
+          <h3 style="font-size:20px;font-weight:700;margin-bottom:12px;color:#1a1a1a;">Product Leadership</h3>
+          <p style="font-size:14px;color:#666;line-height:1.7;">Lead teams from discovery to scale with excellence.</p>
+        </div>
+        <div class="service-card">
+          <div style="font-size:40px;margin-bottom:20px;">📊</div>
+          <h3 style="font-size:20px;font-weight:700;margin-bottom:12px;color:#1a1a1a;">Experimentation &amp; Data</h3>
+          <p style="font-size:14px;color:#666;line-height:1.7;">Measure impact, iterate fast, optimize for growth.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" style="padding:140px 48px;background:linear-gradient(135deg,white 0%,rgba(37,99,235,0.02) 50%,white 100%);position:relative;overflow:hidden;">
+    <div style="max-width:700px;margin:0 auto;position:relative;z-index:2;">
+      <div style="text-align:center;margin-bottom:60px;">
+        <div style="font-family:'Space Mono',monospace;color:#2563eb;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;font-weight:700;">Let's Build</div>
+        <h2 class="section-h2" style="font-size:48px;font-weight:700;line-height:1.1;color:#1a1a1a;">Start Your Next AI Product</h2>
+      </div>
+
+      <form id="contactForm" style="display:flex;flex-direction:column;gap:20px;">
+        <input  type="text"  name="name"    class="form-input" placeholder="Your name"                   required />
+        <input  type="email" name="email"   class="form-input" placeholder="your@email.com"              required />
+        <textarea            name="message" class="form-input" placeholder="Tell me about your vision…"  required rows="5"></textarea>
+        <button type="submit" id="submitBtn" class="btn-submit">Send Message</button>
+        <div id="formSuccess" class="form-success">✓ Message received. I'll be in touch within 24 hours.</div>
+      </form>
+
+      <div style="margin-top:64px;padding-top:48px;border-top:1px solid rgba(37,99,235,0.1);text-align:center;">
+        <p style="font-size:13px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:24px;font-family:'Space Mono',monospace;">Direct contact</p>
+        <div style="display:flex;gap:32px;justify-content:center;flex-wrap:wrap;">
+          <a href="https://linkedin.com"   target="_blank" rel="noopener" class="contact-link cl-linkedin">LinkedIn</a>
+          <a href="mailto:hello@piyush.ai"                                class="contact-link cl-email">Email</a>
+          <a href="https://twitter.com"    target="_blank" rel="noopener" class="contact-link cl-twitter">Twitter</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="padding:40px 48px;background:#fafbff;border-top:1px solid rgba(37,99,235,0.1);color:#999;text-align:center;font-size:12px;">
+    <p>© 2024 Piyush Mandal. Building the future of AI products.</p>
+  </footer>
+
+</div>
+<script>
+  const form       = document.getElementById('contactForm');
+  const submitBtn  = document.getElementById('submitBtn');
+  const successMsg = document.getElementById('formSuccess');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.disabled    = true;
+    submitBtn.textContent = 'Sending…';
+
+    await new Promise(r => setTimeout(r, 1500));
+
+    submitBtn.disabled    = false;
+    submitBtn.textContent = 'Send Message';
+    successMsg.classList.add('show');
+    form.reset();
+
+    setTimeout(() => successMsg.classList.remove('show'), 5000);
+  });
+</script>
+</body>
+</html>
