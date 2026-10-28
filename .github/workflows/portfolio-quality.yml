@@ -1,0 +1,53 @@
+name: Portfolio quality gates
+
+on:
+  pull_request:
+    branches: [master, main]
+  push:
+    branches: [master, main, "feat/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: portfolio-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  portfolio-quality:
+    name: Static checks + Chromium smoke tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Validate markup, links, metadata, accessibility safeguards and JavaScript syntax
+        run: node scripts/validate-portfolio.mjs
+
+      - name: Install isolated browser-test dependency
+        run: npm install --prefix "$RUNNER_TEMP/portfolio-qa" playwright@1.64.1 --no-audit --no-fund
+
+      - name: Install Chromium
+        run: "$RUNNER_TEMP/portfolio-qa/node_modules/.bin/playwright" install --with-deps chromium
+
+      - name: Run desktop, mobile, reduced-motion and fallback smoke tests
+        env:
+          NODE_PATH: ${{ runner.temp }}/portfolio-qa/node_modules
+        run: node scripts/browser-smoke.cjs
+
+      - name: Upload browser screenshots for review
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: portfolio-browser-screenshots
+          path: qa-artifacts/*.png
+          if-no-files-found: warn
+          retention-days: 7
