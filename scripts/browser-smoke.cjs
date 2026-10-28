@@ -124,6 +124,9 @@ const server = http.createServer((req, res) => {
       "Resume-motion control restarts motion with an announced checkbox state");
     const desktopWidth = await desktop.evaluate(() => ({ viewport: innerWidth, content: document.documentElement.scrollWidth }));
     expect(desktopWidth.content <= desktopWidth.viewport + 1, "Desktop layout has no horizontal overflow");
+    // The motion-toggle test scrolls down to the marquee; reset before capturing the hero viewport.
+    await desktop.evaluate(() => window.scrollTo(0, 0));
+    await desktop.waitForTimeout(180);
     await desktop.screenshot({ path: path.join(artifacts, "desktop-hero.png") });
 
     const documentHeight = await desktop.evaluate(() => document.documentElement.scrollHeight);
