@@ -1,356 +1,92 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Piyush Mandal – AI Product Engineer</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Sora', sans-serif;
-      background: #ffffff;
-      color: #1a1a1a;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-15px); }
-    }
-    @keyframes glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(76,175,255,0.15), inset 0 0 20px rgba(76,175,255,0.05); }
-      50%       { box-shadow: 0 0 40px rgba(76,175,255,0.3),  inset 0 0 30px rgba(76,175,255,0.1); }
-    }
-
-    .scroll-hint { animation: float 2.5s ease-in-out infinite; }
-
-    /* Ambient orbs */
-    .orb { position: absolute; border-radius: 50%; pointer-events: none; }
-    .orb-1 { top:-300px; left:-300px; width:600px; height:600px; background:radial-gradient(circle,rgba(37,99,235,0.12) 0%,transparent 70%); filter:blur(80px); animation:float 6s ease-in-out infinite; }
-    .orb-2 { bottom:-200px; right:-200px; width:500px; height:500px; background:radial-gradient(circle,rgba(124,58,237,0.1) 0%,transparent 70%); filter:blur(80px); animation:float 7s ease-in-out infinite 1s; }
-    .orb-3 { top:50%; left:50%; width:400px; height:400px; background:radial-gradient(circle,rgba(236,72,153,0.08) 0%,transparent 70%); filter:blur(100px); animation:float 8s ease-in-out infinite 2s; }
-
-    /* Nav */
-    nav { position:fixed; top:0; left:0; right:0; z-index:1000; backdrop-filter:blur(20px); background:rgba(255,255,255,0.8); border-bottom:1px solid rgba(37,99,235,0.1); padding:16px 48px; display:flex; justify-content:space-between; align-items:center; }
-    .nav-logo { font-family:'Space Mono',monospace; font-size:16px; font-weight:700; letter-spacing:2px; background:linear-gradient(120deg,#2563eb,#7c3aed); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; text-decoration:none; }
-    .nav-links { display:flex; gap:48px; }
-    .nav-link { font-size:13px; text-decoration:none; color:#666; font-weight:500; transition:all 0.3s ease; }
-    .nav-link-work:hover    { color:#2563eb; text-shadow:0 0 20px rgba(37,99,235,0.3); }
-    .nav-link-about:hover   { color:#7c3aed; text-shadow:0 0 20px rgba(124,58,237,0.3); }
-    .nav-link-contact:hover { color:#ec4899; text-shadow:0 0 20px rgba(236,72,153,0.3); }
-    .btn-nav { padding:10px 24px; background:linear-gradient(120deg,#2563eb,#7c3aed); color:white; border-radius:6px; text-decoration:none; font-size:13px; font-weight:700; transition:all 0.3s ease; }
-    .btn-nav:hover { transform:translateY(-2px); box-shadow:0 12px 40px rgba(37,99,235,0.25); }
-
-    /* Buttons */
-    .btn-primary { display:inline-block; padding:14px 36px; background:linear-gradient(120deg,#2563eb,#7c3aed); color:white; border-radius:8px; text-decoration:none; font-weight:700; font-size:14px; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1); cursor:pointer; border:none; font-family:'Sora',sans-serif; }
-    .btn-primary:hover { transform:translateY(-4px); box-shadow:0 20px 60px rgba(37,99,235,0.3); }
-    .btn-secondary { display:inline-block; padding:14px 36px; border:2px solid #2563eb; color:#2563eb; border-radius:8px; text-decoration:none; font-weight:700; font-size:14px; transition:all 0.3s ease; cursor:pointer; background:rgba(37,99,235,0.05); }
-    .btn-secondary:hover { border-color:#7c3aed; color:#7c3aed; background:rgba(124,58,237,0.1); box-shadow:0 0 30px rgba(37,99,235,0.2); }
-
-    /* Project cards */
-    .project-card { background:white; border:1px solid rgba(37,99,235,0.15); border-radius:12px; overflow:hidden; transition:all 0.4s cubic-bezier(0.23,1,0.32,1); cursor:pointer; box-shadow:0 4px 20px rgba(0,0,0,0.05); }
-    .project-card:hover { border-color:#2563eb; transform:translateY(-12px); box-shadow:0 30px 60px rgba(37,99,235,0.15); }
-
-    /* Tags */
-    .tag { display:inline-block; padding:6px 12px; background:rgba(37,99,235,0.1); color:#2563eb; font-size:11px; border-radius:4px; font-weight:500; border:1px solid rgba(37,99,235,0.2); }
-
-    /* Service cards */
-    .service-card { background:white; border:1px solid rgba(37,99,235,0.1); border-radius:12px; padding:40px; transition:all 0.3s ease; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.04); }
-    .service-card:hover { border-color:#2563eb; background:linear-gradient(135deg,rgba(37,99,235,0.05),rgba(124,58,237,0.03)); transform:translateY(-4px); box-shadow:0 20px 50px rgba(37,99,235,0.12); }
-
-    /* Form */
-    .form-input { width:100%; padding:14px 16px; border:1px solid rgba(37,99,235,0.2); background:rgba(37,99,235,0.05); border-radius:8px; font-size:14px; font-family:'Sora',sans-serif; color:#1a1a1a; transition:all 0.3s ease; resize:vertical; }
-    .form-input:focus { border-color:#2563eb; background:rgba(37,99,235,0.12); outline:none; box-shadow:0 0 0 3px rgba(37,99,235,0.1); }
-    .form-input::placeholder { color:#bbb; }
-    .btn-submit { width:100%; padding:14px 32px; background:linear-gradient(120deg,#2563eb,#7c3aed); color:white; border:none; border-radius:8px; font-weight:700; font-size:14px; cursor:pointer; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1); font-family:'Sora',sans-serif; }
-    .btn-submit:hover { transform:translateY(-4px); box-shadow:0 20px 50px rgba(37,99,235,0.3); }
-    .btn-submit:disabled { opacity:0.7; cursor:not-allowed; transform:none !important; box-shadow:none !important; }
-    .form-success { display:none; padding:16px; background:rgba(37,99,235,0.12); border:1px solid #2563eb; color:#2563eb; border-radius:8px; font-weight:600; text-align:center; font-size:13px; }
-    .form-success.show { display:block; }
-
-    /* Contact links */
-    .contact-link { text-decoration:none; font-weight:600; font-size:13px; transition:all 0.3s ease; }
-    .cl-linkedin { color:#2563eb; } .cl-linkedin:hover { color:#1a1a1a; text-shadow:0 0 20px rgba(37,99,235,0.3); }
-    .cl-email    { color:#7c3aed; } .cl-email:hover    { color:#1a1a1a; text-shadow:0 0 20px rgba(124,58,237,0.3); }
-    .cl-twitter  { color:#ec4899; } .cl-twitter:hover  { color:#1a1a1a; text-shadow:0 0 20px rgba(236,72,153,0.3); }
-
-    /* Responsive */
-    @media (max-width: 900px) {
-      nav { padding:16px 24px; }
-      .nav-links { display:none; }
-      .hero-grid { grid-template-columns:1fr !important; }
-      .hero-visual { display:none; }
-      .hero-h1 { font-size:44px !important; }
-      .work-grid, .about-grid, .services-grid { grid-template-columns:1fr !important; }
-      .stats-grid { grid-template-columns:repeat(2,1fr) !important; }
-      section { padding-left:24px !important; padding-right:24px !important; }
-      .section-h2 { font-size:36px !important; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090b10">
+<meta name="description" content="Piyush Mandal — AI Product Engineer and Growth Product Builder. Building Pathvio and Hush AI Concierge.">
+<title>Piyush Mandal — AI Product Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#090b10;--panel:#10131b;--ink:#f4f5f7;--muted:#9b9eac;--line:rgba(255,255,255,.12);--lime:#d5ff65;--cyan:#82e8ff;--violet:#9b8cff;--mono:'DM Mono',monospace;--sans:'Manrope',sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);overflow-x:hidden}body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:8;opacity:.055;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E")}a{color:inherit;text-decoration:none}button{font:inherit}.mono,.eyebrow,.tag,.nav-status,.number,.meta{font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em}.wrap{width:min(1240px,calc(100% - 64px));margin:auto}.topbar{position:fixed;top:0;left:0;right:0;z-index:20;border-bottom:1px solid transparent;transition:.3s;background:rgba(9,11,16,.45);backdrop-filter:blur(16px)}.topbar.scrolled{border-color:var(--line);background:rgba(9,11,16,.85)}nav{height:76px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:800;letter-spacing:-.06em;font-size:19px}.brand span{color:var(--lime)}.navlinks{display:flex;gap:30px;align-items:center;font-size:12px;color:#c5c7d0}.navlinks a{transition:color .2s}.navlinks a:hover{color:var(--lime)}.nav-status{font-size:10px;color:var(--lime);display:flex;align-items:center;gap:9px}.pulse{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 14px var(--lime);animation:pulse 1.8s infinite}@keyframes pulse{50%{opacity:.4;box-shadow:0 0 2px var(--lime)}}.hero{min-height:100svh;position:relative;display:flex;align-items:center;overflow:hidden;border-bottom:1px solid var(--line);padding:120px 0 70px}.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:70px 70px;mask-image:linear-gradient(to bottom,black,transparent 90%);opacity:.55}.hero-glow{position:absolute;width:700px;height:700px;right:-110px;top:3%;border-radius:50%;background:radial-gradient(circle,rgba(116,88,255,.19),rgba(38,218,255,.07) 35%,transparent 70%);filter:blur(30px);pointer-events:none}.hero-layout{display:grid;grid-template-columns:1.08fr .92fr;align-items:center;position:relative;z-index:2;gap:20px}.eyebrow{font-size:11px;color:var(--lime);display:flex;align-items:center;gap:12px}.eyebrow:before{content:"";height:1px;width:27px;background:var(--lime)}h1{font-size:clamp(58px,8.2vw,112px);line-height:.94;letter-spacing:-.085em;margin:28px 0 24px;font-weight:700;max-width:780px}h1 .outline{color:transparent;-webkit-text-stroke:1px rgba(245,246,250,.72)}h1 .accent{color:var(--lime)}.hero-copy{font-size:clamp(15px,1.4vw,18px);line-height:1.8;color:#aeb1bf;max-width:530px}.hero-copy strong{color:var(--ink);font-weight:600}.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}.btn{display:inline-flex;align-items:center;gap:12px;padding:14px 19px;border:1px solid var(--line);border-radius:4px;font-size:12px;font-weight:700;transition:transform .25s,border-color .25s,background .25s}.btn:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.45)}.btn.primary{background:var(--lime);border-color:var(--lime);color:#11150a}.btn.primary:hover{background:#e2ff9c}.arrow{font-size:16px}.hero-meta{display:flex;gap:28px;flex-wrap:wrap;margin-top:48px;color:#777b8b;font-size:10px}.hero-meta span{display:flex;gap:9px;align-items:center}.hero-meta b{color:#cdd0da;font-weight:500}.scene{height:min(650px,67vw);min-height:430px;position:relative;perspective:1000px;transform-style:preserve-3d}.scene canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1}.scene-label{position:absolute;z-index:3;font:10px var(--mono);letter-spacing:.1em;color:#a4a8b7}.label-a{top:13%;right:2%}.label-b{bottom:12%;left:0}.scene-index{position:absolute;right:0;bottom:4%;font:10px var(--mono);color:#626778;z-index:3}.orbit-card{position:absolute;z-index:4;width:185px;padding:15px;border:1px solid rgba(255,255,255,.19);background:rgba(16,19,27,.78);backdrop-filter:blur(16px);box-shadow:0 25px 80px #0006;transform-style:preserve-3d}.orbit-card small{font:9px var(--mono);color:#9b9eac;text-transform:uppercase;letter-spacing:.08em}.orbit-card strong{display:block;font-size:14px;margin:12px 0 5px}.orbit-card p{font-size:10px;color:#999dac;margin:0;line-height:1.6}.card-one{top:17%;left:2%;transform:rotateY(10deg) rotateZ(-5deg)}.card-two{right:0;bottom:19%;transform:rotateY(-12deg) rotateZ(4deg)}.card-mark{width:27px;height:27px;display:grid;place-items:center;border:1px solid #4b5161;color:var(--lime);margin-bottom:18px}.scroll-cue{position:absolute;bottom:25px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;color:#777b8b;font:9px var(--mono);letter-spacing:.15em}.scroll-cue i{height:30px;width:1px;background:linear-gradient(var(--lime),transparent);animation:scrollLine 1.6s ease-in-out infinite}@keyframes scrollLine{50%{transform:scaleY(.5);transform-origin:top}}section{position:relative}.section{padding:130px 0;border-bottom:1px solid var(--line)}.section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;margin-bottom:58px}.section-head h2{font-size:clamp(38px,6vw,72px);letter-spacing:-.075em;line-height:1;margin:18px 0 0;max-width:700px}.section-head p{max-width:300px;font-size:13px;line-height:1.8;color:var(--muted);margin:0}.kicker{font:10px var(--mono);color:var(--lime);letter-spacing:.12em;text-transform:uppercase}.projects{display:grid;gap:24px}.project{position:relative;display:grid;grid-template-columns:.93fr 1.07fr;min-height:430px;background:var(--panel);border:1px solid var(--line);overflow:hidden;isolation:isolate;transition:border-color .35s,transform .35s}.project:hover{border-color:rgba(213,255,101,.48);transform:translateY(-4px)}.project:nth-child(2){grid-template-columns:1.07fr .93fr}.project:nth-child(2) .project-art{order:0}.project:nth-child(2) .project-info{order:1}.project-info{padding:clamp(28px,5vw,58px);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;position:relative;z-index:2}.project-top{display:flex;justify-content:space-between;width:100%;font:10px var(--mono);color:#7c8090}.project h3{font-size:clamp(35px,4vw,57px);letter-spacing:-.075em;line-height:.98;margin:30px 0 18px}.project h3 em{font-style:normal;color:var(--lime)}.project-info>p{color:#a5a8b6;font-size:13px;line-height:1.85;max-width:460px}.tags{display:flex;gap:7px;flex-wrap:wrap;margin:22px 0 30px}.tag{font-size:9px;border:1px solid rgba(255,255,255,.13);color:#c0c3ce;padding:7px 9px}.text-link{font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:13px;padding-bottom:6px;border-bottom:1px solid var(--lime);color:var(--lime)}.project-art{position:relative;min-height:360px;overflow:hidden;display:grid;place-items:center;background:#101622}.art-pathvio{background:radial-gradient(ellipse at 50% 50%,#293a36 0%,#17211f 35%,#0b0e13 75%)}.art-concierge{background:radial-gradient(ellipse at 50% 50%,#3a2b22 0%,#211914 38%,#0c0d11 78%)}.art-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.08) 1px,transparent 1px);background-size:34px 34px;transform:perspective(500px) rotateX(58deg) scale(1.8) translateY(20%);opacity:.22}.mock-window{position:relative;width:76%;max-width:440px;background:rgba(11,14,19,.88);border:1px solid rgba(255,255,255,.2);box-shadow:0 30px 100px #0008;transform:rotateY(-10deg) rotateX(5deg);z-index:2;backdrop-filter:blur(14px);transition:transform .5s}.project:hover .mock-window{transform:rotateY(0) rotateX(0) translateY(-5px)}.window-bar{height:30px;display:flex;align-items:center;gap:5px;padding:0 12px;border-bottom:1px solid var(--line)}.window-bar i{width:5px;height:5px;border-radius:50%;background:#777}.window-title{margin-left:7px;font:8px var(--mono);color:#777b8b}.mock-content{padding:20px}.mock-kicker{font:8px var(--mono);color:var(--lime);letter-spacing:.12em}.mock-heading{font-size:clamp(19px,2.5vw,28px);line-height:1.08;letter-spacing:-.06em;margin:12px 0 15px}.mock-heading span{color:var(--lime)}.mock-line{height:5px;width:76%;background:#303541;margin:8px 0}.mock-line.short{width:48%}.mock-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:18px}.mock-tile{height:68px;background:#1c232a;border:1px solid #343d43;display:flex;align-items:flex-end;padding:7px;font:7px var(--mono);color:#c7c9d0}.art-concierge .mock-tile{background:linear-gradient(145deg,#6b4834,#231c18);border-color:#72503a}.mock-convo{border:1px solid #4b392d;padding:10px;margin-top:14px;font-size:8px;color:#c9b9a9;line-height:1.6}.mock-convo b{color:#ffe0ad;display:block;margin-bottom:4px}.float-chip{position:absolute;z-index:4;padding:10px 12px;background:#11161b;border:1px solid #444b50;color:#d8ff9d;font:9px var(--mono);box-shadow:0 10px 30px #0006}.chip-one{top:17%;right:7%;transform:rotate(7deg)}.chip-two{bottom:17%;left:5%;transform:rotate(-6deg)}.art-concierge .float-chip{color:#ffd2a1;border-color:#70513a}.marquee{overflow:hidden;border-bottom:1px solid var(--line);padding:24px 0;background:#0c0e14}.marquee-track{display:flex;width:max-content;animation:marquee 30s linear infinite;gap:38px;align-items:center}.marquee span{font:11px var(--mono);color:#737889;text-transform:uppercase;letter-spacing:.13em;white-space:nowrap}.marquee b{color:var(--lime);font-weight:400}@keyframes marquee{to{transform:translateX(-50%)}}.about-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:100px}.about-statement{font-size:clamp(29px,4vw,48px);letter-spacing:-.065em;line-height:1.12;margin:0}.about-statement span{color:var(--lime)}.about-copy{color:#a5a8b6;font-size:14px;line-height:1.95}.about-copy p{margin:0 0 20px}.capabilities{display:grid;grid-template-columns:repeat(4,1fr);margin-top:70px;border:1px solid var(--line)}.capability{padding:24px;border-right:1px solid var(--line);min-height:140px}.capability:last-child{border-right:0}.capability small{font:9px var(--mono);color:#777b8b}.capability h4{font-size:14px;margin:24px 0 8px}.capability p{font-size:11px;line-height:1.7;color:#8f93a2;margin:0}.timeline{border-top:1px solid var(--line)}.timeline-row{display:grid;grid-template-columns:180px 1fr 1.2fr;gap:35px;padding:30px 0;border-bottom:1px solid var(--line);align-items:start}.timeline-row .date{font:10px var(--mono);color:var(--lime)}.timeline-row h3{margin:0;font-size:20px;letter-spacing:-.04em}.timeline-row p{margin:0;color:#969aa9;font-size:12px;line-height:1.8}.contact{padding:130px 0 80px;overflow:hidden}.contact:before{content:"";position:absolute;width:600px;height:600px;left:50%;top:0;transform:translateX(-50%);background:radial-gradient(circle,rgba(213,255,101,.1),transparent 68%);pointer-events:none}.contact-inner{position:relative;text-align:center;max-width:850px;margin:auto}.contact h2{font-size:clamp(50px,9vw,110px);letter-spacing:-.09em;line-height:.92;margin:22px 0 25px}.contact h2 span{color:var(--lime)}.contact p{font-size:14px;color:#a5a8b6;line-height:1.8;max-width:480px;margin:0 auto}.contact-actions{display:flex;justify-content:center;gap:12px;margin-top:32px;flex-wrap:wrap}.footer{border-top:1px solid var(--line);padding:22px 0;color:#777b8b;font:9px var(--mono);display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}.footer a:hover{color:var(--lime)}.reveal{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}.reveal.visible{opacity:1;transform:translateY(0)}.cursor-glow{position:fixed;z-index:0;width:250px;height:250px;border-radius:50%;background:radial-gradient(circle,rgba(130,232,255,.06),transparent 70%);pointer-events:none;transform:translate(-50%,-50%)}@media(max-width:850px){.wrap{width:min(100% - 38px,650px)}.navlinks{gap:15px}.navlinks a:nth-child(2){display:none}.nav-status{display:none}.hero-layout{grid-template-columns:1fr}.hero{padding-top:140px;min-height:auto}.hero h1{font-size:clamp(56px,14vw,95px)}.scene{height:440px;min-height:390px;margin-top:10px}.hero-meta{margin-top:30px}.section{padding:85px 0}.section-head{display:block;margin-bottom:35px}.section-head p{margin-top:22px}.project,.project:nth-child(2){grid-template-columns:1fr}.project-art{order:0!important;min-height:330px}.project-info{order:1!important;padding:30px}.about-grid{grid-template-columns:1fr;gap:28px}.capabilities{grid-template-columns:repeat(2,1fr)}.capability:nth-child(2){border-right:0}.capability:nth-child(-n+2){border-bottom:1px solid var(--line)}.timeline-row{grid-template-columns:90px 1fr;gap:12px}.timeline-row p{grid-column:2}.contact{padding:90px 0 60px}}@media(max-width:480px){.wrap{width:calc(100% - 30px)}nav{height:66px}.navlinks{gap:12px;font-size:11px}.hero h1{font-size:55px}.scene{height:370px;min-height:370px}.orbit-card{width:145px;padding:11px}.card-one{left:0}.card-two{right:0}.orbit-card strong{font-size:12px}.orbit-card p{font-size:9px}.scene-label{font-size:8px}.project-art{min-height:270px}.mock-window{width:82%}.mock-content{padding:14px}.mock-tiles{gap:4px}.mock-tile{height:52px;padding:5px;font-size:6px}.float-chip{font-size:8px;padding:8px}.capability{padding:15px;min-height:125px}.capability h4{margin-top:18px}.footer{font-size:8px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}}
+</style>
 </head>
 <body>
-<div style="width:100%;background:#fff;position:relative;overflow:hidden;">
-
-  <!-- Ambient Background -->
-  <div style="position:fixed;inset:0;z-index:0;pointer-events:none;">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-  </div>
-
-  <!-- Navigation -->
-  <nav>
-    <a href="#" class="nav-logo">PM.AI</a>
-    <div class="nav-links">
-      <a href="#work"    class="nav-link nav-link-work">Work</a>
-      <a href="#about"   class="nav-link nav-link-about">About</a>
-      <a href="#contact" class="nav-link nav-link-contact">Contact</a>
-    </div>
-    <a href="#contact" class="btn-nav">Let's Talk</a>
-  </nav>
-
-  <!-- Hero -->
-  <section style="padding-top:140px;padding-bottom:100px;padding-left:48px;padding-right:48px;min-height:100vh;display:flex;align-items:center;background:linear-gradient(135deg,#fff 0%,#f8f9ff 50%,#faf5ff 100%);position:relative;overflow:hidden;">
-    <div class="hero-grid" style="position:relative;z-index:2;max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1.2fr 0.8fr;gap:80px;align-items:center;">
-
-      <div>
-        <div style="font-family:'Space Mono',monospace;color:#2563eb;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;font-weight:700;">Next-Gen AI Products</div>
-        <h1 class="hero-h1" style="font-size:72px;font-weight:700;line-height:1.1;margin-bottom:28px;color:#1a1a1a;letter-spacing:-1.5px;">Ship AI That Millions Love</h1>
-        <p style="font-size:18px;color:#555;line-height:1.8;margin-bottom:40px;max-width:520px;">I architect intelligent systems that scale. From AI strategy to LLM engineering—building products that feel native, not artificial.</p>
-        <div style="display:flex;gap:16px;flex-wrap:wrap;">
-          <a href="#work"    class="btn-primary">See My Work</a>
-          <a href="#contact" class="btn-secondary">Let's Connect</a>
-        </div>
-      </div>
-
-      <div class="hero-visual" style="position:relative;height:520px;">
-        <div class="scroll-hint" style="background:linear-gradient(135deg,rgba(37,99,235,0.1),rgba(124,58,237,0.08));border:1px solid rgba(37,99,235,0.2);border-radius:16px;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;backdrop-filter:blur(10px);">
-          <div style="position:absolute;inset:0;background:linear-gradient(135deg,transparent 0%,rgba(37,99,235,0.05) 100%);"></div>
-          <div style="text-align:center;z-index:2;">
-            <div style="font-size:140px;margin-bottom:20px;animation:float 3s ease-in-out infinite;">🧠</div>
-            <p style="font-size:13px;color:#2563eb;font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:1px;">Your Hero Image</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div style="position:absolute;bottom:32px;left:50%;transform:translateX(-50%);text-align:center;pointer-events:none;z-index:2;">
-      <div class="scroll-hint" style="font-size:24px;color:#2563eb;">↓</div>
-      <p style="font-size:11px;color:#2563eb;margin-top:8px;text-transform:uppercase;letter-spacing:1px;font-family:'Space Mono',monospace;">Scroll</p>
-    </div>
-  </section>
-
-  <!-- Featured Work -->
-  <section id="work" style="padding:140px 48px;background:linear-gradient(180deg,#fff 0%,#f8f9ff 50%,#fff 100%);position:relative;">
-    <div style="max-width:1200px;margin:0 auto;position:relative;z-index:2;">
-      <div style="margin-bottom:80px;">
-        <div style="font-family:'Space Mono',monospace;color:#2563eb;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;font-weight:700;">Featured Projects</div>
-        <h2 class="section-h2" style="font-size:56px;font-weight:700;line-height:1.1;color:#1a1a1a;">Work That Transforms</h2>
-      </div>
-
-      <div class="work-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:32px;">
-
-        <div class="project-card">
-          <div style="background:linear-gradient(135deg,rgba(37,99,235,0.12),rgba(124,58,237,0.08));height:300px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-            <div style="font-size:100px;opacity:0.3;">🚀</div>
-            <div style="position:absolute;inset:0;background:linear-gradient(135deg,transparent 50%,rgba(37,99,235,0.08) 100%);"></div>
-          </div>
-          <div style="padding:40px;">
-            <div style="font-family:'Space Mono',monospace;color:#2563eb;font-size:11px;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;font-weight:700;">AI Career Platform</div>
-            <h3 style="font-size:24px;font-weight:700;margin-bottom:12px;color:#1a1a1a;line-height:1.3;">Pathvio.in</h3>
-            <p style="font-size:14px;color:#666;line-height:1.7;margin-bottom:24px;">AI-powered career discovery using LLMs and RAG. Intelligent role matching for millions seeking clarity.</p>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-              <span class="tag">LLM</span>
-              <span class="tag">RAG</span>
-              <span class="tag">Career Tech</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="project-card">
-          <div style="background:linear-gradient(135deg,rgba(37,99,235,0.12),rgba(124,58,237,0.08));height:300px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-            <div style="font-size:100px;opacity:0.3;">🛒</div>
-            <div style="position:absolute;inset:0;background:linear-gradient(135deg,transparent 50%,rgba(37,99,235,0.08) 100%);"></div>
-          </div>
-          <div style="padding:40px;">
-            <div style="font-family:'Space Mono',monospace;color:#2563eb;font-size:11px;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;font-weight:700;">E-Commerce AI</div>
-            <h3 style="font-size:24px;font-weight:700;margin-bottom:12px;color:#1a1a1a;line-height:1.3;">Brantanos Experience</h3>
-            <p style="font-size:14px;color:#666;line-height:1.7;margin-bottom:24px;">AI-driven checkout with intelligent recommendations. 35% less abandonment, 22% higher conversion.</p>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-              <span class="tag">UX</span>
-              <span class="tag">ML</span>
-              <span class="tag">E-Commerce</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- Stats -->
-  <section style="padding:100px 48px;background:linear-gradient(90deg,rgba(37,99,235,0.05),rgba(124,58,237,0.05));border-top:1px solid rgba(37,99,235,0.1);border-bottom:1px solid rgba(37,99,235,0.1);position:relative;">
-    <div style="max-width:1200px;margin:0 auto;position:relative;z-index:2;">
-      <div class="stats-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:48px;text-align:center;">
-        <div>
-          <div style="font-size:48px;font-weight:700;background:linear-gradient(120deg,#2563eb,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;font-family:'Space Mono',monospace;">5+</div>
-          <p style="font-size:13px;color:#888;text-transform:uppercase;letter-spacing:1px;font-weight:500;">Years</p>
-        </div>
-        <div>
-          <div style="font-size:48px;font-weight:700;background:linear-gradient(120deg,#2563eb,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;font-family:'Space Mono',monospace;">20+</div>
-          <p style="font-size:13px;color:#888;text-transform:uppercase;letter-spacing:1px;font-weight:500;">Products</p>
-        </div>
-        <div>
-          <div style="font-size:48px;font-weight:700;background:linear-gradient(120deg,#2563eb,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;font-family:'Space Mono',monospace;">100M+</div>
-          <p style="font-size:13px;color:#888;text-transform:uppercase;letter-spacing:1px;font-weight:500;">Users</p>
-        </div>
-        <div>
-          <div style="font-size:48px;font-weight:700;background:linear-gradient(120deg,#2563eb,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;font-family:'Space Mono',monospace;">15+</div>
-          <p style="font-size:13px;color:#888;text-transform:uppercase;letter-spacing:1px;font-weight:500;">Tech Stack</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- About -->
-  <section id="about" style="padding:140px 48px;background:white;position:relative;">
-    <div style="max-width:1200px;margin:0 auto;position:relative;z-index:2;">
-      <div class="about-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:start;">
-
-        <div>
-          <div style="font-family:'Space Mono',monospace;color:#2563eb;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;font-weight:700;">About</div>
-          <h2 class="section-h2" style="font-size:48px;font-weight:700;line-height:1.1;margin-bottom:28px;color:#1a1a1a;">AI-Native Product Thinking</h2>
-          <p style="font-size:16px;color:#555;line-height:1.8;margin-bottom:28px;">I don't build AI features. I architect AI-native products. Every decision—from UX to infrastructure—optimizes for intelligence, not just technology.</p>
-          <p style="font-size:16px;color:#555;line-height:1.8;">I've shipped with founders, scaled at scaleups, and guided enterprises. The result: products used by millions.</p>
-        </div>
-
-        <div style="background:linear-gradient(135deg,rgba(37,99,235,0.08),rgba(124,58,237,0.05));border:1px solid rgba(37,99,235,0.15);border-radius:12px;padding:48px;backdrop-filter:blur(10px);">
-          <div style="font-family:'Space Mono',monospace;color:#7c3aed;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:32px;font-weight:700;">Core Strengths</div>
-          <div style="display:flex;flex-direction:column;gap:24px;">
-
-            <div style="display:flex;gap:12px;align-items:flex-start;">
-              <div style="color:#2563eb;font-weight:700;margin-top:2px;font-size:18px;flex-shrink:0;">✦</div>
-              <div><div style="font-weight:700;color:#1a1a1a;margin-bottom:4px;">AI-Native Product Architecture</div><p style="font-size:13px;color:#888;">Design products where intelligence is the core, not an add-on.</p></div>
-            </div>
-
-            <div style="display:flex;gap:12px;align-items:flex-start;">
-              <div style="color:#2563eb;font-weight:700;margin-top:2px;font-size:18px;flex-shrink:0;">✦</div>
-              <div><div style="font-weight:700;color:#1a1a1a;margin-bottom:4px;">LLM Engineering &amp; Integration</div><p style="font-size:13px;color:#888;">Prompt engineering, fine-tuning, RAG pipelines that scale.</p></div>
-            </div>
-
-            <div style="display:flex;gap:12px;align-items:flex-start;">
-              <div style="color:#2563eb;font-weight:700;margin-top:2px;font-size:18px;flex-shrink:0;">✦</div>
-              <div><div style="font-weight:700;color:#1a1a1a;margin-bottom:4px;">Cross-Functional Leadership</div><p style="font-size:13px;color:#888;">Unite engineering, design, and business around AI excellence.</p></div>
-            </div>
-
-            <div style="display:flex;gap:12px;align-items:flex-start;">
-              <div style="color:#2563eb;font-weight:700;margin-top:2px;font-size:18px;flex-shrink:0;">✦</div>
-              <div><div style="font-weight:700;color:#1a1a1a;margin-bottom:4px;">Data-Driven Iteration</div><p style="font-size:13px;color:#888;">Measure, learn, evolve. Every decision backed by data.</p></div>
-            </div>
-
-            <div style="display:flex;gap:12px;align-items:flex-start;">
-              <div style="color:#2563eb;font-weight:700;margin-top:2px;font-size:18px;flex-shrink:0;">✦</div>
-              <div><div style="font-weight:700;color:#1a1a1a;margin-bottom:4px;">Go-to-Market for AI</div><p style="font-size:13px;color:#888;">Launch AI products that resonate, convert, and retain users.</p></div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Services -->
-  <section style="padding:140px 48px;background:linear-gradient(180deg,#f8f9ff 0%,white 100%);position:relative;">
-    <div style="max-width:1200px;margin:0 auto;position:relative;z-index:2;">
-      <div style="margin-bottom:80px;">
-        <div style="font-family:'Space Mono',monospace;color:#7c3aed;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;font-weight:700;">Capabilities</div>
-        <h2 class="section-h2" style="font-size:56px;font-weight:700;line-height:1.1;color:#1a1a1a;">What I Deliver</h2>
-      </div>
-      <div class="services-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:32px;">
-        <div class="service-card">
-          <div style="font-size:40px;margin-bottom:20px;">🧠</div>
-          <h3 style="font-size:20px;font-weight:700;margin-bottom:12px;color:#1a1a1a;">AI Product Strategy</h3>
-          <p style="font-size:14px;color:#666;line-height:1.7;">Vision, roadmaps, and GTM strategies for intelligent products.</p>
-        </div>
-        <div class="service-card">
-          <div style="font-size:40px;margin-bottom:20px;">⚡</div>
-          <h3 style="font-size:20px;font-weight:700;margin-bottom:12px;color:#1a1a1a;">LLM Architecture</h3>
-          <p style="font-size:14px;color:#666;line-height:1.7;">Design and implement production-grade LLM systems.</p>
-        </div>
-        <div class="service-card">
-          <div style="font-size:40px;margin-bottom:20px;">🎯</div>
-          <h3 style="font-size:20px;font-weight:700;margin-bottom:12px;color:#1a1a1a;">Product Leadership</h3>
-          <p style="font-size:14px;color:#666;line-height:1.7;">Lead teams from discovery to scale with excellence.</p>
-        </div>
-        <div class="service-card">
-          <div style="font-size:40px;margin-bottom:20px;">📊</div>
-          <h3 style="font-size:20px;font-weight:700;margin-bottom:12px;color:#1a1a1a;">Experimentation &amp; Data</h3>
-          <p style="font-size:14px;color:#666;line-height:1.7;">Measure impact, iterate fast, optimize for growth.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Contact -->
-  <section id="contact" style="padding:140px 48px;background:linear-gradient(135deg,white 0%,rgba(37,99,235,0.02) 50%,white 100%);position:relative;overflow:hidden;">
-    <div style="max-width:700px;margin:0 auto;position:relative;z-index:2;">
-      <div style="text-align:center;margin-bottom:60px;">
-        <div style="font-family:'Space Mono',monospace;color:#2563eb;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;font-weight:700;">Let's Build</div>
-        <h2 class="section-h2" style="font-size:48px;font-weight:700;line-height:1.1;color:#1a1a1a;">Start Your Next AI Product</h2>
-      </div>
-
-      <form id="contactForm" style="display:flex;flex-direction:column;gap:20px;">
-        <input  type="text"  name="name"    class="form-input" placeholder="Your name"                   required />
-        <input  type="email" name="email"   class="form-input" placeholder="your@email.com"              required />
-        <textarea            name="message" class="form-input" placeholder="Tell me about your vision…"  required rows="5"></textarea>
-        <button type="submit" id="submitBtn" class="btn-submit">Send Message</button>
-        <div id="formSuccess" class="form-success">✓ Message received. I'll be in touch within 24 hours.</div>
-      </form>
-
-      <div style="margin-top:64px;padding-top:48px;border-top:1px solid rgba(37,99,235,0.1);text-align:center;">
-        <p style="font-size:13px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:24px;font-family:'Space Mono',monospace;">Direct contact</p>
-        <div style="display:flex;gap:32px;justify-content:center;flex-wrap:wrap;">
-          <a href="https://linkedin.com"   target="_blank" rel="noopener" class="contact-link cl-linkedin">LinkedIn</a>
-          <a href="mailto:hello@piyush.ai"                                class="contact-link cl-email">Email</a>
-          <a href="https://twitter.com"    target="_blank" rel="noopener" class="contact-link cl-twitter">Twitter</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer style="padding:40px 48px;background:#fafbff;border-top:1px solid rgba(37,99,235,0.1);color:#999;text-align:center;font-size:12px;">
-    <p>© 2024 Piyush Mandal. Building the future of AI products.</p>
-  </footer>
-
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+<header class="topbar" id="topbar"><nav class="wrap" aria-label="Main navigation">
+<a class="brand" href="#top" aria-label="Piyush Mandal home">PM<span>®</span></a>
+<div class="navlinks"><a href="#work">Selected work</a><a href="#about">About</a><a href="#experience">Journey</a><a href="#contact">Contact ↗</a></div>
+<div class="nav-status"><i class="pulse"></i> BUILDING WHAT'S NEXT</div>
+</nav></header>
+<main>
+<section class="hero" id="top"><div class="hero-grid"></div><div class="hero-glow"></div>
+<div class="wrap hero-layout">
+<div class="hero-text">
+<div class="eyebrow">AI PRODUCT ENGINEER · GROWTH BUILDER</div>
+<h1>Ideas into<br><span class="outline">intelligent</span><br><span class="accent">products.</span></h1>
+<p class="hero-copy">I'm Piyush — I build at the intersection of <strong>AI, product thinking and growth.</strong> From the first user problem to a working product, I turn complexity into experiences people can actually use.</p>
+<div class="hero-actions"><a class="btn primary" href="#work">Explore my work <span class="arrow">↘</span></a><a class="btn" href="#about">A little about me <span class="arrow">↗</span></a></div>
+<div class="hero-meta"><span><b>01</b> Founder mindset</span><span><b>02</b> Product-led growth</span><span><b>03</b> AI-native systems</span></div>
 </div>
+<div class="scene" id="scene" aria-label="Interactive animated 3D particle sculpture">
+<canvas id="sceneCanvas"></canvas><div class="scene-label label-a">FIG. 01 / THINK IN SYSTEMS</div><div class="scene-label label-b">ROTATE YOUR PERSPECTIVE ↗</div><div class="scene-index">PM—001 / 2026</div>
+<div class="orbit-card card-one" data-depth="1"><div class="card-mark">↗</div><small>Product / 001</small><strong>Build with intent.</strong><p>Start with the human problem. Work backwards to the product.</p></div>
+<div class="orbit-card card-two" data-depth="2"><small>Systems / 002</small><strong>Make complexity useful.</strong><p>Grounded AI. Clear decisions. Measurable progress.</p></div>
+</div>
+</div><div class="scroll-cue"><i></i> SCROLL TO EXPLORE</div></section>
+<div class="marquee" aria-label="Areas of expertise"><div class="marquee-track"><span>AI PRODUCT ENGINEERING</span><b>✳</b><span>PRODUCT STRATEGY</span><b>✳</b><span>GROWTH SYSTEMS</span><b>✳</b><span>CONVERSATIONAL AI</span><b>✳</b><span>USER EXPERIENCE</span><b>✳</b><span>AI PRODUCT ENGINEERING</span><b>✳</b><span>PRODUCT STRATEGY</span><b>✳</b><span>GROWTH SYSTEMS</span><b>✳</b><span>CONVERSATIONAL AI</span><b>✳</b><span>USER EXPERIENCE</span><b>✳</b></div></div>
+<section class="section" id="work"><div class="wrap">
+<div class="section-head reveal"><div><div class="kicker">01 / Selected work</div><h2>Built for real<br>world problems.</h2></div><p>Two flagship projects. Different problems, same obsession: making intelligent systems genuinely useful.</p></div>
+<div class="projects">
+<article class="project reveal"><div class="project-info"><div class="project-top"><span>FLAGSHIP PROJECT / 001</span><span>AI · CAREER TECH</span></div><h3>Pathvio<span> — </span><em>find your next.</em></h3><p>An AI-powered career decision and growth platform helping professionals move from uncertainty to a clear next step. Built around guided journeys, practical tools and a product principle: always make the next action clear.</p><div class="tags"><span class="tag">Product strategy</span><span class="tag">AI career tools</span><span class="tag">React</span><span class="tag">FastAPI</span><span class="tag">Growth</span></div><a class="text-link" href="https://pathvio.in/" target="_blank" rel="noopener noreferrer">Explore Pathvio <span>↗</span></a></div>
+<div class="project-art art-pathvio" data-art="pathvio"><div class="art-grid"></div><div class="float-chip chip-one">NEXT BEST STEP / ACTIVE</div><div class="mock-window"><div class="window-bar"><i></i><i></i><i></i><span class="window-title">PATHVIO / CAREER DASHBOARD</span></div><div class="mock-content"><div class="mock-kicker">YOUR CAREER, IN MOTION</div><div class="mock-heading">Make better<br><span>career decisions.</span></div><div class="mock-line"></div><div class="mock-line short"></div><div class="mock-tiles"><div class="mock-tile">ROLE FINDER ↗</div><div class="mock-tile">SKILL MATCH ↗</div><div class="mock-tile">MOCK INTERVIEW ↗</div></div></div></div><div class="float-chip chip-two">ONE CLEAR NEXT STEP ↗</div></div></article>
+<article class="project reveal"><div class="project-info"><div class="project-top"><span>FLAGSHIP PROJECT / 002</span><span>GEN AI · COMMERCE</span></div><h3>Hush AI<br><em>Concierge.</em></h3><p>A decision engine for footwear shopping. Instead of overwhelming customers with endless options, it delivers one grounded top pick, transparent trade-offs and context-aware help across discovery and checkout.</p><div class="tags"><span class="tag">Conversational AI</span><span class="tag">LangGraph</span><span class="tag">FastAPI</span><span class="tag">ChromaDB</span><span class="tag">Next.js</span></div><a class="text-link" href="https://github.com/Piyush07-M/Ecommerce-AI-Assistant" target="_blank" rel="noopener noreferrer">Explore the build <span>↗</span></a></div>
+<div class="project-art art-concierge" data-art="concierge"><div class="art-grid"></div><div class="float-chip chip-one">520 FOOTWEAR PRODUCTS</div><div class="mock-window"><div class="window-bar"><i></i><i></i><i></i><span class="window-title">HUSH / PERSONAL SHOPPING</span></div><div class="mock-content"><div class="mock-kicker">YOUR CONCIERGE IS READY</div><div class="mock-heading">One great pick.<br><span>Clear trade-offs.</span></div><div class="mock-tiles"><div class="mock-tile">TOP PICK / 01</div><div class="mock-tile">OPTION / 02</div><div class="mock-tile">OPTION / 03</div></div><div class="mock-convo"><b>HUSH AI · RECOMMENDATION</b>Based on your needs, here's the strongest match — and what you trade off with each alternative.</div></div></div><div class="float-chip chip-two">GROUNDED IN CATALOG DATA</div></div></article>
+</div></div></section>
+<section class="section" id="about"><div class="wrap"><div class="section-head reveal"><div><div class="kicker">02 / How I think</div><h2>Product is where<br>everything meets.</h2></div><p>Strategy without shipping is a slide. Technology without empathy is a demo. I care about the space between them.</p></div>
+<div class="about-grid reveal"><p class="about-statement">I connect <span>user problems</span>, product decisions and engineering into experiences that create <span>real momentum.</span></p><div class="about-copy"><p>My background spans SEO, digital marketing, product growth and AI-powered product development. That mix shapes how I build: start with intent, understand the journey, find the friction, and design a system that helps people move forward.</p><p>I enjoy working across the full arc—from framing the problem and choosing what to build, to collaborating with AI coding tools, validating behavior and improving the experience based on evidence.</p><p>I'm especially interested in products where AI can reduce uncertainty, not add another layer of complexity.</p></div></div>
+<div class="capabilities reveal"><div class="capability"><small>01 / THINK</small><h4>Product strategy</h4><p>Problem framing, discovery, positioning and roadmaps.</p></div><div class="capability"><small>02 / DESIGN</small><h4>Experience design</h4><p>Journeys, interaction models and decision-focused UX.</p></div><div class="capability"><small>03 / BUILD</small><h4>AI systems</h4><p>LLM workflows, retrieval, validation and product architecture.</p></div><div class="capability"><small>04 / GROW</small><h4>Growth loops</h4><p>SEO, acquisition, activation and product-led experiments.</p></div></div>
+</div></section>
+<section class="section" id="experience"><div class="wrap"><div class="section-head reveal"><div><div class="kicker">03 / The journey</div><h2>From growth<br>to building.</h2></div><p>A career shaped by search, product growth and a growing conviction that the best way to learn is to ship.</p></div>
+<div class="timeline reveal"><div class="timeline-row"><div class="date">2017 — 2019</div><h3>Digital Marketing</h3><p>Built a foundation in digital acquisition, search visibility and understanding what makes people discover and choose products.</p></div><div class="timeline-row"><div class="date">2019 — 2023</div><h3>Product Growth</h3><p>Moved closer to product: connecting user intent, growth opportunities, experimentation and product performance.</p></div><div class="timeline-row"><div class="date">2023 — NOW</div><h3>Growth + AI Products</h3><p>Building products and AI experiences end-to-end, including Pathvio and Hush AI Concierge—while bringing a growth lens to product decisions.</p></div></div>
+</div></section>
+<section class="contact" id="contact"><div class="wrap contact-inner reveal"><div class="kicker">04 / Open to the next chapter</div><h2>Let's make<br>something <span>matter.</span></h2><p>Building an ambitious AI product, exploring a product opportunity, or want to exchange ideas? I'd love to hear what you're working on.</p><div class="contact-actions"><a class="btn primary" href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">Connect on LinkedIn ↗</a><a class="btn" href="https://github.com/Piyush07-M" target="_blank" rel="noopener noreferrer">Explore my GitHub ↗</a></div></div></section>
+</main>
+<footer class="wrap footer"><span>© <span id="year"></span> PIYUSH MANDAL / BUILT WITH INTENT.</span><span>AI PRODUCT ENGINEERING · GROWTH · SYSTEMS</span><a href="#top">BACK TO TOP ↑</a></footer>
 <script>
-  const form       = document.getElementById('contactForm');
-  const submitBtn  = document.getElementById('submitBtn');
-  const successMsg = document.getElementById('formSuccess');
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    submitBtn.disabled    = true;
-    submitBtn.textContent = 'Sending…';
-
-    await new Promise(r => setTimeout(r, 1500));
-
-    submitBtn.disabled    = false;
-    submitBtn.textContent = 'Send Message';
-    successMsg.classList.add('show');
-    form.reset();
-
-    setTimeout(() => successMsg.classList.remove('show'), 5000);
-  });
+(() => {
+ const topbar=document.getElementById('topbar'), glow=document.getElementById('cursorGlow');
+ const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const onScroll=()=>topbar.classList.toggle('scrolled',window.scrollY>20);
+ window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+ document.getElementById('year').textContent=new Date().getFullYear();
+ if(!reduced){
+  const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+  window.addEventListener('pointermove',e=>{glow.style.left=e.clientX+'px';glow.style.top=e.clientY+'px';},{passive:true});
+ }else{document.querySelectorAll('.reveal').forEach(el=>el.classList.add('visible'));glow.remove();}
+ const canvas=document.getElementById('sceneCanvas'),ctx=canvas.getContext('2d'),scene=document.getElementById('scene');
+ let w=0,h=0,dpr=1,points=[],mouseX=0,mouseY=0,scrollY=0;
+ const resize=()=>{const r=scene.getBoundingClientRect();w=r.width;h=r.height;dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=w*dpr;canvas.height=h*dpr;canvas.style.width=w+'px';canvas.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0);points=[];const n=Math.min(1700,Math.floor(w*h/170));for(let i=0;i<n;i++){const y=2*Math.random()-1,phi=Math.random()*Math.PI*2,rad=Math.sqrt(1-y*y);points.push({x:rad*Math.cos(phi),y,z:rad*Math.sin(phi),s:.5+Math.random()*1.7,phase:Math.random()*6.28})}};
+ const pointer=e=>{const r=scene.getBoundingClientRect();mouseX=((e.clientX-r.left)/r.width-.5)*2;mouseY=((e.clientY-r.top)/r.height-.5)*2};
+ scene.addEventListener('pointermove',pointer,{passive:true});scene.addEventListener('pointerleave',()=>{mouseX=0;mouseY=0});
+ const draw=()=>{ctx.clearRect(0,0,w,h);const t=performance.now()*.00022,scale=Math.min(w,h)*.29,cx=w*.53,cy=h*.5;const projected=[];const ax=t*.7+mouseY*.22,ay=t*.95+mouseX*.45,az=Math.sin(t)*.13;const ca=Math.cos(ax),sa=Math.sin(ax),cb=Math.cos(ay),sb=Math.sin(ay),cc=Math.cos(az),sc=Math.sin(az);
+ for(const p of points){let x=p.x,y=p.y,z=p.z;let y1=y*ca-z*sa,z1=y*sa+z*ca;let x2=x*cb+z1*sb,z2=-x*sb+z1*cb;let x3=x2*cc-y1*sc,y3=x2*sc+y1*cc;const perspective=3.4/(3.4-z2*.75);projected.push({x:cx+x3*scale*perspective,y:cy+y3*scale*perspective,z:z2,s:p.s*perspective,phase:p.phase})}
+ projected.sort((a,b)=>a.z-b.z);
+ for(let i=0;i<projected.length;i++){const p=projected[i];const alpha=.2+((p.z+1)/2)*.65;ctx.beginPath();ctx.arc(p.x,p.y,p.s,0,Math.PI*2);ctx.fillStyle=p.z>.35?'rgba(213,255,101,'+alpha+')':p.z<-.35?'rgba(130,232,255,'+(alpha*.6)+')':'rgba(215,220,240,'+(alpha*.8)+')';ctx.fill()}
+ // Fine meridian rings create the feeling of a connected, dimensional object.
+ ctx.globalAlpha=.14;ctx.strokeStyle='#d5ff65';ctx.lineWidth=.6;
+ for(let ring=0;ring<5;ring++){ctx.beginPath();for(let i=0;i<=100;i++){const a=i/100*Math.PI*2,lat=(ring-2)*.31;const x=Math.cos(a)*Math.cos(lat),y=Math.sin(lat),z=Math.sin(a)*Math.cos(lat);let y1=y*ca-z*sa,z1=y*sa+z*ca;let x2=x*cb+z1*sb,z2=-x*sb+z1*cb;let x3=x2*cc-y1*sc,y3=x2*sc+y1*cc;const pr=3.4/(3.4-z2*.75),px=cx+x3*scale*pr,py=cy+y3*scale*pr;if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py)}ctx.stroke()}
+ ctx.globalAlpha=1;
+ if(!reduced)requestAnimationFrame(draw);
+ };
+ resize();if(reduced)draw();else requestAnimationFrame(draw);
+ window.addEventListener('resize',resize,{passive:true});
+ document.querySelectorAll('.project-art').forEach(el=>{el.addEventListener('pointermove',e=>{if(reduced)return;const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;const mock=el.querySelector('.mock-window');if(mock)mock.style.transform='rotateY('+(-x*12)+'deg) rotateX('+(y*8)+'deg) translateY(-3px)';});el.addEventListener('pointerleave',()=>{const mock=el.querySelector('.mock-window');if(mock)mock.style.transform='';});});
+ document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const target=document.querySelector(a.getAttribute('href'));if(target){e.preventDefault();target.scrollIntoView({behavior:reduced?'auto':'smooth'});}}));
+})();
 </script>
-</body>
-</html>
+</body></html>
