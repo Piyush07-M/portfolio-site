@@ -68,10 +68,21 @@ const server = http.createServer((req, res) => {
     await desktop.waitForTimeout(1800);
 
     await desktop.keyboard.press("Tab");
-    const skipLinkFocused = await desktop.locator(".skip-link").evaluate((node) => ({
-      focused: document.activeElement === node,
-      visible: node.getBoundingClientRect().top >= 0 && node.getBoundingClientRect().top < innerHeight,
-    }));
+    await desktop.waitForTimeout(250); // let the skip-link focus transition finish before checking visibility
+    const skipLinkFocused = await desktop.evaluate(() => {
+      const node = document.querySelector(".skip-link");
+      const active = document.activeElement;
+      const rect = node.getBoundingClientRect();
+      return {
+        focused: active === node,
+        visible: rect.top >= 0 && rect.top < innerHeight,
+        activeTag: active?.tagName,
+        activeClass: active?.className || "",
+        top: Math.round(rect.top),
+        transform: getComputedStyle(node).transform,
+      };
+    });
+    console.log("Skip-link keyboard state:", JSON.stringify(skipLinkFocused));
     expect(skipLinkFocused.focused && skipLinkFocused.visible, "Keyboard-first navigation exposes the visible skip link");
 
     expect((await desktop.title()).includes("Piyush Mandal"), "Desktop document title is correct");
