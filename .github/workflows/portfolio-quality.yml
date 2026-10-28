@@ -37,7 +37,7 @@ jobs:
         run: npm install --prefix "$RUNNER_TEMP/portfolio-qa" playwright@1.64.1 --no-audit --no-fund
 
       - name: Install Chromium
-        run: "$RUNNER_TEMP/portfolio-qa/node_modules/.bin/playwright" install --with-deps chromium
+        run: '"$RUNNER_TEMP/portfolio-qa/node_modules/.bin/playwright" install --with-deps chromium
 
       - name: Run desktop, mobile, reduced-motion and fallback smoke tests
         env:
