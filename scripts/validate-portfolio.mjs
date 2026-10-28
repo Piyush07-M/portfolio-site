@@ -41,6 +41,8 @@ for (const requiredId of ["top", "main-content", "work", "case-studies", "pathvi
 check((html.match(/<h1\b/gi) ?? []).length === 1, "Page has exactly one primary heading");
 check((html.match(/<main\b/gi) ?? []).length === 1, "Page has one main landmark");
 check(/<nav\b[^>]*aria-label=/i.test(html), "Primary navigation has an accessible name");
+const labelledDivs = [...html.matchAll(/<div\\b([^>]*)\\baria-label=["'][^"']+["']([^>]*)>/gi)];
+check(labelledDivs.every((match) => /\\brole=["'][a-z-]+["']/i.test(match[1] + match[2])), "Labelled div regions declare a compatible ARIA role");
 check(/class=["']skip-link["'][^>]*href=["']#main-content["']/.test(html), "Keyboard skip link targets the main content");
 check(/aria-expanded=["']false["']/.test(html), "Mobile navigation exposes expanded state");
 check(html.includes('.js-enabled .nav-links{display:none}') && html.includes("document.documentElement.classList.add('js-enabled')"), "Mobile navigation stays visible until the JS-enhanced menu initializes");
