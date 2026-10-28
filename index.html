@@ -39,13 +39,13 @@
 .hero-copy{max-width:690px}
 .hero h1{font-size:clamp(61px,7vw,101px);max-width:690px}
 .hero h1 .serif{color:#477363}
-.hero-portrait-wrap{position:relative;z-index:2;width:min(100%,450px);margin-left:auto;transform:rotate(2.2deg);padding:12px;background:#fffdf8;border:1px solid #cfc6b7;box-shadow:0 30px 80px #51483218;min-height:0;align-self:center;overflow:visible}
-.hero-portrait-wrap:before{content:"";position:absolute;z-index:-1;inset:22px -25px -22px 22px;background:#dce8dc;border:1px solid #47736320;transform:rotate(-4deg)}
-.hero-portrait{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center 39%;filter:saturate(.9);position:relative;z-index:3;min-height:0;height:auto}
+.hero-portrait-wrap{position:relative;z-index:5;isolation:isolate;display:block;width:min(100%,450px);min-width:0;margin-left:auto;transform:rotate(2.2deg);padding:12px;background:#fffdf8;border:1px solid #cfc6b7;box-shadow:0 30px 80px #51483218;min-height:0;align-self:center;overflow:visible}
+.hero-portrait-wrap:before{content:"";position:absolute;z-index:-1;inset:22px -25px -22px 22px;background:#dce8dc;border:1px solid #47736320;transform:rotate(-4deg);pointer-events:none}
+.hero-portrait{display:block;width:100%;max-width:100%;aspect-ratio:4/5;height:auto;object-fit:cover;object-position:center 39%;filter:saturate(.9);position:relative;z-index:6;min-height:0;visibility:visible;opacity:1}
 .portrait-caption{display:flex;justify-content:space-between;gap:14px;padding:12px 3px 2px;font:9px var(--mono);letter-spacing:.08em;color:#625e56;text-transform:uppercase}
 .portrait-stamp{position:absolute;right:-24px;top:15%;display:grid;place-items:center;width:91px;height:91px;border-radius:50%;border:1px solid #8b3d2e66;background:#f7f4ed;color:#8b3d2e;font:9px var(--mono);letter-spacing:.08em;text-align:center;transform:rotate(11deg)}
 .hero .scene-chip{display:none}
-.hero .visual-stage{height:min(510px,44vw);min-height:390px;position:absolute;inset:50% -6% auto auto;width:58%;transform:translateY(-50%);pointer-events:none;opacity:.24;z-index:0}
+.hero .visual-stage{height:min(510px,44vw);min-height:390px;position:absolute;inset:50% -6% auto auto;width:58%;transform:translateY(-50%);pointer-events:none;opacity:.11;z-index:0}
 .hero .visual-stage canvas{z-index:0}
 .hero .stage-caption{color:#625e56}
 .project-card{border-radius:3px}
@@ -56,7 +56,7 @@
 .principle h3{color:#25231f}
 .contact{background:linear-gradient(180deg,#f7f4ed,#f0e8dc)}
 @media(max-width:940px){.hero-layout{grid-template-columns:1fr .82fr;gap:24px}.hero h1{font-size:clamp(55px,8vw,82px)}.hero-portrait-wrap{width:min(100%,370px)}.hero .visual-stage{right:-4%;width:58%}}
-@media(max-width:700px){.hero-layout{grid-template-columns:1fr;gap:12px}.hero-copy{padding-bottom:4px}.hero-portrait-wrap{width:min(82%,330px);margin:26px auto 16px;transform:rotate(1deg)}.hero-portrait-wrap:before{inset:15px -12px -12px 12px}.portrait-stamp{right:-15px;width:72px;height:72px;font-size:8px}.hero .visual-stage{position:absolute;top:auto;bottom:5%;right:-12%;width:76%;height:330px;min-height:300px;transform:none;opacity:.18}.hero{padding-bottom:52px}}
+@media(max-width:700px){.hero-layout{grid-template-columns:1fr;gap:12px}.hero-copy{padding-bottom:4px}.hero-portrait-wrap{position:relative;z-index:5;width:min(82%,330px);margin:26px auto 16px;transform:rotate(1deg)}.hero-portrait-wrap:before{inset:15px -12px -12px 12px}.portrait-stamp{right:-15px;width:72px;height:72px;font-size:8px}.hero .visual-stage{position:absolute;top:auto;bottom:5%;right:-12%;width:76%;height:330px;min-height:300px;transform:none;opacity:.18}.hero{padding-bottom:52px}}
 @media(max-width:420px){.hero-portrait-wrap{width:78%;margin-top:22px}.hero-meta{gap:12px}.hero-meta span{font-size:8px}.motion-toggle{right:8px;font-size:8px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}.marquee-track{transform:none}.motion-toggle-input,.motion-toggle{display:none}}
 </style>
