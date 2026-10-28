@@ -1,0 +1,63 @@
+name: Portfolio quality gates
+
+"on":
+  pull_request:
+  push:
+    branches:
+      - master
+      - main
+      # Feature branches are covered by pull_request; avoid running the same suite twice.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  portfolio-quality:
+    name: Static checks and Chromium smoke tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Validate JavaScript files
+        run: |
+          node --check scripts/validate-portfolio.mjs
+          node --check scripts/browser-smoke.cjs
+          node --check scripts/cross-browser-smoke.cjs
+          node scripts/validate-portfolio.mjs
+
+      - name: Install isolated browser-test dependency
+        run: npm install --prefix "$RUNNER_TEMP/portfolio-qa" playwright@1.64.1 axe-core@4.14.0 --no-audit --no-fund
+
+      - name: Install Playwright browser engines
+        run: |
+          "$RUNNER_TEMP/portfolio-qa/node_modules/.bin/playwright" install --with-deps chromium firefox webkit
+
+      - name: Run desktop, mobile, reduced-motion and fallback smoke tests
+        env:
+          NODE_PATH: ${{ runner.temp }}/portfolio-qa/node_modules
+        run: node scripts/browser-smoke.cjs
+
+      - name: Run Firefox and WebKit layout/navigation smoke matrix
+        env:
+          NODE_PATH: ${{ runner.temp }}/portfolio-qa/node_modules
+        run: node scripts/cross-browser-smoke.cjs
+
+      - name: Upload browser screenshots for review
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: portfolio-browser-screenshots
+          path: |
+            qa-artifacts/*.png
+            qa-artifacts/accessibility-report.json
+          if-no-files-found: warn
+          retention-days: 7

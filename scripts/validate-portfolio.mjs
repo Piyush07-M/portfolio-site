@@ -1,0 +1,118 @@
+#!/usr/bin/env node
+import assert from "node:assert/strict";
+import { readFileSync, existsSync } from "node:fs";
+import { resolve } from "node:path";
+
+const root = process.cwd();
+const htmlPath = resolve(root, "index.html");
+assert.ok(existsSync(htmlPath), "index.html must exist");
+const html = readFileSync(htmlPath, "utf8");
+const workflowPath = resolve(root, ".github/workflows/portfolio-quality.yml");
+const smokePath = resolve(root, "scripts/browser-smoke.cjs");
+assert.ok(existsSync(workflowPath), "Portfolio quality workflow must exist");
+assert.ok(existsSync(smokePath), "Browser smoke suite must exist");
+const workflow = readFileSync(workflowPath, "utf8");
+const smoke = readFileSync(smokePath, "utf8");
+const passed = [];
+const check = (condition, message) => {
+  assert.ok(condition, message);
+  passed.push(message);
+};
+
+const ids = [...html.matchAll(/\bid=["']([^"']+)["']/g)].map((match) => match[1]);
+const idSet = new Set(ids);
+check(ids.length === idSet.size, "HTML IDs are unique");
+
+const anchors = [...html.matchAll(/<a\b([^>]*)>/gi)].map((match) => match[1]);
+for (const [index, attrs] of anchors.entries()) {
+  const href = attrs.match(/\bhref=["']([^"']+)["']/i)?.[1];
+  if (href?.startsWith("#")) {
+    check(idSet.has(href.slice(1)), `Internal anchor target exists: ${href}`);
+  }
+  if (/\btarget=["']_blank["']/i.test(attrs)) {
+    const rel = attrs.match(/\brel=["']([^"']+)["']/i)?.[1]?.toLowerCase().split(/\s+/) ?? [];
+    check(rel.includes("noopener") && rel.includes("noreferrer"), `External new-tab link ${index + 1} uses safe rel attributes`);
+  }
+}
+
+for (const requiredId of ["top", "main-content", "work", "case-studies", "pathvio-case-study", "hush-case-study", "approach", "journey", "contact"]) {
+  check(idSet.has(requiredId), `Required page target exists: #${requiredId}`);
+}
+check((html.match(/<h1\b/gi) ?? []).length === 1, "Page has exactly one primary heading");
+check((html.match(/<main\b/gi) ?? []).length === 1, "Page has one main landmark");
+check(/<nav\b[^>]*aria-label=/i.test(html), "Primary navigation has an accessible name");
+const labelledDivs = [...html.matchAll(/<div\\b([^>]*)\\baria-label=["'][^"']+["']([^>]*)>/gi)];
+check(labelledDivs.every((match) => /\\brole=["'][a-z-]+["']/i.test(match[1] + match[2])), "Labelled div regions declare a compatible ARIA role");
+check(/class=["']skip-link["'][^>]*href=["']#main-content["']/.test(html), "Keyboard skip link targets the main content");
+check(/aria-expanded=["']false["']/.test(html), "Mobile navigation exposes expanded state");
+check(html.includes('.js-enabled .nav-links{display:none}') && html.includes("document.documentElement.classList.add('js-enabled')"), "Mobile navigation stays visible until the JS-enhanced menu initializes");
+check(html.includes("event.key==='Escape'") && html.includes("menu.focus()"), "Mobile navigation can be dismissed with Escape and returns focus");
+check(html.includes('id="visualStage" role="group"') && !html.includes('id="visualStage" role="img"'), "Hero scene semantics preserve readable text in its child cards");
+check(html.includes('class="case-insights') && html.includes("Evaluation plan · not results") && html.includes("margin-adjusted voucher use"), "Case studies include clearly labelled measurement plans rather than invented outcomes");
+check(html.includes("new ResizeObserver(resize)") && html.includes("webglcontextlost") && html.includes("activeScene?.traverse"), "3D scene handles responsive sizing, context loss and startup cleanup");
+check(html.includes('id="motionToggle"') && html.includes("Resume motion") && html.includes(".motion-toggle-input:checked~.marquee-track"), "A keyboard-accessible motion toggle can pause the marquee without JavaScript");
+check(html.includes('class="marquee-track" aria-hidden="true"') && html.includes("Areas of work include product thinking"), "Animated marquee has a static screen-reader equivalent and avoids repeated announcements");
+check(!html.includes('body:after{content:"";position:fixed;inset:0;z-index:20;pointer-events:none;opacity:.025'), "Global texture does not sit over all text and block automated contrast assessment");
+check(html.includes("stage.dataset.motionPaused=String(manuallyPaused)") && html.includes("manuallyPaused||running"), "The motion toggle also pauses and resumes the WebGL renderer");
+check(html.includes(":focus-visible"), "Keyboard focus styles are defined");
+check(html.includes("prefers-reduced-motion"), "Reduced-motion preferences are respected");
+check(html.includes(".reveal{opacity:1") && html.includes(".reveal-ready .reveal{opacity:0"), "Content remains visible unless reveal enhancement initializes");
+check(html.includes("keeping CSS fallback visible") && html.includes("fallback.style.opacity='1'"), "CSS visual fallback remains available when WebGL fails");
+check(html.includes("stageObserver.observe(stage)") && html.includes("cancelAnimationFrame(raf)"), "3D animation pauses when the hero leaves the viewport");
+check(html.includes("renderer.setSize(stage.clientWidth,stage.clientHeight,false)") && html.includes("if(reduceMotion||!running)draw(false)"), "3D renderer handles resize while preserving CSS sizing");
+check(html.includes("aria-current") && html.includes("navObserver"), "Navigation indicates the current section");
+check(html.includes("case-flow") && html.includes("Guided product loop") && html.includes("Recommendation pipeline"), "Both flagship case studies show product flow diagrams");
+check(html.includes("application/ld+json"), "Structured Person metadata is included");
+check(html.includes('property="og:title"') && html.includes('name="description"'), "Search/social metadata is present");
+check(existsSync(resolve(root, "assets/portfolio-mark.svg")), "Favicon asset exists");
+check(/uses: actions\/checkout@[a-f0-9]{40}/.test(workflow) && /uses: actions\/setup-node@[a-f0-9]{40}/.test(workflow) && /uses: actions\/upload-artifact@[a-f0-9]{40}/.test(workflow), "GitHub Actions are pinned to immutable commit SHAs");
+check(workflow.includes("accessibility-report.json"), "CI retains the accessibility report as a review artifact");
+check(smoke.includes('".webp": "image/webp"'), "Browser smoke server serves authentic WebP product assets with the correct MIME type");
+check(smoke.includes("description: item.description") && smoke.includes("nodes: item.nodes.map"), "Axe incomplete checks retain affected nodes and diagnostics");
+check(existsSync(resolve(root, "assets/pathvio-product-preview.webp")), "Authentic Pathvio product screenshot asset exists");
+check(html.includes('src="./assets/pathvio-product-preview.webp"') && /<img[^>]+alt="Screenshot of the Pathvio homepage/.test(html), "Authentic product screenshot is embedded with useful alternative text");
+check(html.includes("--bg:#f7f4ed") && html.includes("--acid:#8b3d2e") && html.includes("--mint:#477363"), "Light editorial theme uses warm paper, terracotta and sage tokens");
+check(html.includes('src="./assets/piyush-portrait.webp"') && /<img[^>]+class="hero-portrait"[^>]+alt="Piyush Mandal/.test(html), "Optimized personal portrait is embedded with meaningful alternative text");
+check(!html.includes("github.com/Piyush07-M/Pathvio") && !html.includes("github.com/Piyush07-M/Ecommerce-AI-Assistant"), "Public case studies do not link to private source repositories");
+check(html.includes("249 tests passing across 42 pytest suites") && html.includes("not independently rerun for this portfolio"), "Repository-reported evidence is qualified rather than presented as a new test run");
+
+const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
+check(scripts.length >= 3, "Expected browser scripts and structured metadata are present");
+for (const [index, match] of scripts.entries()) {
+  const attrs = match[1];
+  const source = match[2].trim();
+  if (/application\/ld\+json/i.test(attrs)) {
+    JSON.parse(source);
+    passed.push(`Structured data script ${index + 1} is valid JSON`);
+    continue;
+  }
+  if (/type=["']module["']/i.test(attrs)) {
+    new Function(`return (async function(){\n${source}\n})`);
+  } else {
+    new Function(source);
+  }
+  passed.push(`JavaScript syntax block ${index + 1} compiles`);
+}
+
+const contrastRatio = (foreground, background) => {
+  const luminance = (hex) => {
+    const raw = hex.replace("#", "");
+    const channels = [0, 2, 4].map((offset) => parseInt(raw.slice(offset, offset + 2), 16) / 255);
+    const linear = channels.map((value) => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4);
+    return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+  };
+  const a = luminance(foreground);
+  const b = luminance(background);
+  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+};
+for (const selector of [".scroll-cue", ".source-note"]) {
+  const block = html.match(new RegExp(selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\{([^}]+)\\}"));
+  assert.ok(block, `CSS rule exists for ${selector}`);
+  const color = block[1].match(/color:(#[0-9a-f]{6})/i)?.[1];
+  assert.ok(color, `Foreground colour exists for ${selector}`);
+  const ratio = contrastRatio(color, "#f7f4ed");
+  check(ratio >= 4.5, `${selector} contrast is at least WCAG AA for normal text (${ratio.toFixed(2)}:1)`);
+}
+
+console.log(`Portfolio static validation passed: ${passed.length} assertions.`);
+for (const message of passed) console.log(`✓ ${message}`);
