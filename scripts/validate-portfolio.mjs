@@ -7,6 +7,12 @@ const root = process.cwd();
 const htmlPath = resolve(root, "index.html");
 assert.ok(existsSync(htmlPath), "index.html must exist");
 const html = readFileSync(htmlPath, "utf8");
+const workflowPath = resolve(root, ".github/workflows/portfolio-quality.yml");
+const smokePath = resolve(root, "scripts/browser-smoke.cjs");
+assert.ok(existsSync(workflowPath), "Portfolio quality workflow must exist");
+assert.ok(existsSync(smokePath), "Browser smoke suite must exist");
+const workflow = readFileSync(workflowPath, "utf8");
+const smoke = readFileSync(smokePath, "utf8");
 const passed = [];
 const check = (condition, message) => {
   assert.ok(condition, message);
@@ -37,6 +43,11 @@ check((html.match(/<main\b/gi) ?? []).length === 1, "Page has one main landmark"
 check(/<nav\b[^>]*aria-label=/i.test(html), "Primary navigation has an accessible name");
 check(/class=["']skip-link["'][^>]*href=["']#main-content["']/.test(html), "Keyboard skip link targets the main content");
 check(/aria-expanded=["']false["']/.test(html), "Mobile navigation exposes expanded state");
+check(html.includes('.js-enabled .nav-links{display:none}') && html.includes("document.documentElement.classList.add('js-enabled')"), "Mobile navigation stays visible until the JS-enhanced menu initializes");
+check(html.includes("event.key==='Escape'") && html.includes("menu.focus()"), "Mobile navigation can be dismissed with Escape and returns focus");
+check(html.includes('id="visualStage" role="group"') && !html.includes('id="visualStage" role="img"'), "Hero scene semantics preserve readable text in its child cards");
+check(html.includes('class="case-insights') && html.includes("Evaluation plan · not results") && html.includes("margin-adjusted voucher use"), "Case studies include clearly labelled measurement plans rather than invented outcomes");
+check(html.includes("new ResizeObserver(resize)") && html.includes("webglcontextlost") && html.includes("activeScene?.traverse"), "3D scene handles responsive sizing, context loss and startup cleanup");
 check(html.includes(":focus-visible"), "Keyboard focus styles are defined");
 check(html.includes("prefers-reduced-motion"), "Reduced-motion preferences are respected");
 check(html.includes(".reveal{opacity:1") && html.includes(".reveal-ready .reveal{opacity:0"), "Content remains visible unless reveal enhancement initializes");
@@ -48,6 +59,10 @@ check(html.includes("case-flow") && html.includes("Guided product loop") && html
 check(html.includes("application/ld+json"), "Structured Person metadata is included");
 check(html.includes('property="og:title"') && html.includes('name="description"'), "Search/social metadata is present");
 check(existsSync(resolve(root, "assets/portfolio-mark.svg")), "Favicon asset exists");
+check(/uses: actions\/checkout@[a-f0-9]{40}/.test(workflow) && /uses: actions\/setup-node@[a-f0-9]{40}/.test(workflow) && /uses: actions\/upload-artifact@[a-f0-9]{40}/.test(workflow), "GitHub Actions are pinned to immutable commit SHAs");
+check(workflow.includes("accessibility-report.json"), "CI retains the accessibility report as a review artifact");
+check(smoke.includes('".webp": "image/webp"'), "Browser smoke server serves authentic WebP product assets with the correct MIME type");
+check(smoke.includes("description: item.description") && smoke.includes("nodes: item.nodes.map"), "Axe incomplete checks retain affected nodes and diagnostics");
 check(existsSync(resolve(root, "assets/pathvio-product-preview.webp")), "Authentic Pathvio product screenshot asset exists");
 check(html.includes('src="./assets/pathvio-product-preview.webp"') && /<img[^>]+alt="Screenshot of the Pathvio homepage/.test(html), "Authentic product screenshot is embedded with useful alternative text");
 check(!html.includes("github.com/Piyush07-M/Pathvio") && !html.includes("github.com/Piyush07-M/Ecommerce-AI-Assistant"), "Public case studies do not link to private source repositories");
