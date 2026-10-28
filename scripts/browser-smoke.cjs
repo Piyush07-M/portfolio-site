@@ -246,6 +246,29 @@ const server = http.createServer((req, res) => {
     const narrowWidth = await mobile.evaluate(() => ({ viewport: innerWidth, content: document.documentElement.scrollWidth }));
     expect(narrowWidth.content <= narrowWidth.viewport + 1, "320px narrow-screen layout has no horizontal overflow");
 
+    // Progressive-enhancement check: essential content and mobile links must work without JavaScript.
+    const noJs = await browser.newPage({ viewport: { width: 390, height: 844 }, javaScriptEnabled: false });
+    await noJs.goto("http://127.0.0.1:4173/", { waitUntil: "domcontentloaded", timeout: 45000 });
+    const noJsState = await noJs.evaluate(() => {
+      const nav = document.querySelector("#navLinks");
+      const navRect = nav.getBoundingClientRect();
+      const revealItems = [...document.querySelectorAll(".reveal")];
+      return {
+        navVisible: getComputedStyle(nav).display !== "none" && navRect.width > 0 && navRect.height > 0 && navRect.bottom > 0,
+        menuButtonHidden: getComputedStyle(document.querySelector("#menuToggle")).display === "none",
+        revealsVisible: revealItems.length > 0 && revealItems.every((node) => Number.parseFloat(getComputedStyle(node).opacity) >= 0.95),
+        fallbackVisible: Number.parseFloat(getComputedStyle(document.querySelector("#stageFallback")).opacity) >= 0.95,
+      };
+    });
+    expect(noJsState.navVisible, "Mobile navigation links stay visible when JavaScript is disabled");
+    expect(noJsState.menuButtonHidden, "Non-functional mobile menu button stays hidden without JavaScript");
+    expect(noJsState.revealsVisible, "All content remains visible when JavaScript is disabled");
+    expect(noJsState.fallbackVisible, "CSS hero artwork remains visible when JavaScript is disabled");
+    await noJs.screenshot({ path: path.join(artifacts, "mobile-no-js.png") });
+    await noJs.locator('#navLinks a[href="#work"]').click();
+    expect(new URL(noJs.url()).hash === "#work", "Mobile navigation links remain usable without JavaScript");
+    await noJs.close();
+
     const fallbackPage = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
     const fallbackErrors = [];
     fallbackPage.on("pageerror", (error) => fallbackErrors.push(error.message));
