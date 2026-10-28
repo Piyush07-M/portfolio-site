@@ -93,6 +93,33 @@ const server = http.createServer((req, res) => {
     expect(invisibleReveals === 0, "All scroll-reveal content appears after visiting each section");
     await desktop.screenshot({ path: path.join(artifacts, "desktop-full-page.png"), fullPage: true });
 
+    // Automated WCAG 2.2 A/AA scan after all scroll-reveal content is visible.
+    await desktop.addScriptTag({ path: require.resolve("axe-core") });
+    const accessibility = await desktop.evaluate(async () => {
+      const result = await window.axe.run(document, {
+        runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"] },
+      });
+      return {
+        violations: result.violations.map((violation) => ({
+          id: violation.id,
+          impact: violation.impact,
+          help: violation.help,
+          nodes: violation.nodes.map((node) => ({
+            target: node.target,
+            summary: node.failureSummary,
+          })),
+        })),
+        passes: result.passes.length,
+        incomplete: result.incomplete.map((item) => ({ id: item.id, help: item.help })),
+      };
+    });
+    fs.writeFileSync(path.join(artifacts, "accessibility-report.json"), JSON.stringify(accessibility, null, 2));
+    if (accessibility.violations.length) {
+      console.error("AXE VIOLATIONS:", JSON.stringify(accessibility.violations, null, 2));
+    }
+    expect(accessibility.violations.length === 0,
+      `Axe WCAG 2.2 A/AA scan passes with no violations (rules passed: ${accessibility.passes})`);
+
     const mobileErrors = [];
     const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
     mobile.on("pageerror", (error) => mobileErrors.push(error.message));
