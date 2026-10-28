@@ -161,6 +161,7 @@
 let activeRenderer=null,activeScene=null,resizeObserver=null;
 const stage=document.getElementById('visualStage');
 const fallback=document.getElementById('stageFallback');
+const motionToggle=document.getElementById('motionToggle');
 const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let stageObserver=null;
 try {
