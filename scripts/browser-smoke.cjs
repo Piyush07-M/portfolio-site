@@ -162,6 +162,19 @@ const server = http.createServer((req, res) => {
     expect(desktopErrors.length === 0 && mobileErrors.length === 0 && fallbackErrors.length === 0,
       "No uncaught JavaScript errors in desktop, mobile, or CDN-fallback runs");
 
+    // Best-effort visual reference capture for the real product; never make CI depend on the live site's uptime.
+    const liveReference = await browser.newPage({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 1 });
+    try {
+      await liveReference.goto("https://pathvio.in/", { waitUntil: "domcontentloaded", timeout: 20000 });
+      await liveReference.waitForTimeout(1100);
+      await liveReference.screenshot({ path: path.join(artifacts, "pathvio-live-reference.png") });
+      console.log("Captured authentic Pathvio homepage reference for visual review.");
+    } catch (error) {
+      console.warn("Pathvio reference capture skipped (live site unavailable):", error.message);
+    } finally {
+      await liveReference.close();
+    }
+
     await fallbackPage.close();
     await mobile.close();
     await desktop.close();
