@@ -50,6 +50,8 @@ check(html.includes("event.key==='Escape'") && html.includes("menu.focus()"), "M
 check(html.includes('id="visualStage" role="group"') && !html.includes('id="visualStage" role="img"'), "Hero scene semantics preserve readable text in its child cards");
 check(html.includes('class="case-insights') && html.includes("Evaluation plan · not results") && html.includes("margin-adjusted voucher use"), "Case studies include clearly labelled measurement plans rather than invented outcomes");
 check(html.includes("new ResizeObserver(resize)") && html.includes("webglcontextlost") && html.includes("activeScene?.traverse"), "3D scene handles responsive sizing, context loss and startup cleanup");
+check(html.includes('id="motionToggle"') && html.includes("Resume motion") && html.includes(".motion-toggle-input:checked~.marquee-track"), "A keyboard-accessible motion toggle can pause the marquee without JavaScript");
+check(html.includes("stage.dataset.motionPaused=String(manuallyPaused)") && html.includes("manuallyPaused||running"), "The motion toggle also pauses and resumes the WebGL renderer");
 check(html.includes(":focus-visible"), "Keyboard focus styles are defined");
 check(html.includes("prefers-reduced-motion"), "Reduced-motion preferences are respected");
 check(html.includes(".reveal{opacity:1") && html.includes(".reveal-ready .reveal{opacity:0"), "Content remains visible unless reveal enhancement initializes");
