@@ -34,7 +34,7 @@ jobs:
           node scripts/validate-portfolio.mjs
 
       - name: Install isolated browser-test dependency
-        run: npm install --prefix "$RUNNER_TEMP/portfolio-qa" playwright@1.64.1 --no-audit --no-fund
+        run: npm install --prefix "$RUNNER_TEMP/portfolio-qa" playwright@1.64.1 axe-core@4.14.0 --no-audit --no-fund
 
       - name: Install Chromium
         run: '"$RUNNER_TEMP/portfolio-qa/node_modules/.bin/playwright" install --with-deps chromium'
