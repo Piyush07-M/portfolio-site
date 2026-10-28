@@ -67,6 +67,13 @@ const server = http.createServer((req, res) => {
     await desktop.goto("http://127.0.0.1:4173/", { waitUntil: "domcontentloaded", timeout: 45000 });
     await desktop.waitForTimeout(1800);
 
+    await desktop.keyboard.press("Tab");
+    const skipLinkFocused = await desktop.locator(".skip-link").evaluate((node) => ({
+      focused: document.activeElement === node,
+      visible: node.getBoundingClientRect().top >= 0 && node.getBoundingClientRect().top < innerHeight,
+    }));
+    expect(skipLinkFocused.focused && skipLinkFocused.visible, "Keyboard-first navigation exposes the visible skip link");
+
     expect((await desktop.title()).includes("Piyush Mandal"), "Desktop document title is correct");
     expect(await desktop.locator("h1").count() === 1 && await desktop.locator("h1").isVisible(), "One visible primary heading is rendered");
     expect(await desktop.locator("#pathvio-case-study").count() === 1 && await desktop.locator("#hush-case-study").count() === 1, "Both flagship case studies render");
@@ -76,6 +83,10 @@ const server = http.createServer((req, res) => {
       fallbackOpacity: Number.parseFloat(getComputedStyle(document.querySelector("#stageFallback")).opacity),
     }));
     expect(stage.webglReady || stage.fallbackOpacity >= 0.5, "Hero shows either the WebGL scene or its CSS fallback");
+    expect(stage.webglReady, "Three.js WebGL scene actually initializes in Chromium with SwiftShader");
+    const canvasBounds = await desktop.locator("#visualStage canvas").boundingBox();
+    expect(Boolean(canvasBounds && canvasBounds.width > 250 && canvasBounds.height > 250),
+      "Live WebGL canvas has a real, non-zero rendered viewport");
     const desktopWidth = await desktop.evaluate(() => ({ viewport: innerWidth, content: document.documentElement.scrollWidth }));
     expect(desktopWidth.content <= desktopWidth.viewport + 1, "Desktop layout has no horizontal overflow");
     await desktop.screenshot({ path: path.join(artifacts, "desktop-hero.png") });
@@ -139,6 +150,24 @@ const server = http.createServer((req, res) => {
 
     await mobile.getByRole("button", { name: "Open navigation menu" }).click();
     expect(await mobile.locator("#menuToggle").getAttribute("aria-expanded") === "true", "Mobile menu opens and announces expanded state");
+    await mobile.addScriptTag({ path: require.resolve("axe-core") });
+    const mobileAccessibility = await mobile.evaluate(async () => {
+      const result = await window.axe.run(document, {
+        runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"] },
+      });
+      return {
+        violations: result.violations.map((violation) => ({
+          id: violation.id,
+          impact: violation.impact,
+          help: violation.help,
+          targets: violation.nodes.map((node) => node.target),
+        })),
+        passes: result.passes.length,
+      };
+    });
+    if (mobileAccessibility.violations.length) console.error("MOBILE AXE VIOLATIONS:", JSON.stringify(mobileAccessibility.violations, null, 2));
+    expect(mobileAccessibility.violations.length === 0,
+      `Axe WCAG 2.2 A/AA scan passes with the mobile menu open (rules passed: ${mobileAccessibility.passes})`);
     await mobile.locator('#navLinks a[href="#work"]').click();
     await mobile.waitForTimeout(150);
     expect(new URL(mobile.url()).hash === "#work", "Mobile navigation preserves native URL fragment");
