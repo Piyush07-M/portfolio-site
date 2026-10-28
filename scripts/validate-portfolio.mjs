@@ -71,6 +71,8 @@ check(smoke.includes('".webp": "image/webp"'), "Browser smoke server serves auth
 check(smoke.includes("description: item.description") && smoke.includes("nodes: item.nodes.map"), "Axe incomplete checks retain affected nodes and diagnostics");
 check(existsSync(resolve(root, "assets/pathvio-product-preview.webp")), "Authentic Pathvio product screenshot asset exists");
 check(html.includes('src="./assets/pathvio-product-preview.webp"') && /<img[^>]+alt="Screenshot of the Pathvio homepage/.test(html), "Authentic product screenshot is embedded with useful alternative text");
+check(html.includes("--bg:#f7f4ed") && html.includes("--acid:#8b3d2e") && html.includes("--mint:#477363"), "Light editorial theme uses warm paper, terracotta and sage tokens");
+check(html.includes('src="./assets/piyush-portrait.webp"') && /<img[^>]+class="hero-portrait"[^>]+alt="Piyush Mandal/.test(html), "Optimized personal portrait is embedded with meaningful alternative text");
 check(!html.includes("github.com/Piyush07-M/Pathvio") && !html.includes("github.com/Piyush07-M/Ecommerce-AI-Assistant"), "Public case studies do not link to private source repositories");
 check(html.includes("249 tests passing across 42 pytest suites") && html.includes("not independently rerun for this portfolio"), "Repository-reported evidence is qualified rather than presented as a new test run");
 
@@ -108,7 +110,7 @@ for (const selector of [".scroll-cue", ".source-note"]) {
   assert.ok(block, `CSS rule exists for ${selector}`);
   const color = block[1].match(/color:(#[0-9a-f]{6})/i)?.[1];
   assert.ok(color, `Foreground colour exists for ${selector}`);
-  const ratio = contrastRatio(color, "#0b0d0e");
+  const ratio = contrastRatio(color, "#f7f4ed");
   check(ratio >= 4.5, `${selector} contrast is at least WCAG AA for normal text (${ratio.toFixed(2)}:1)`);
 }
 
