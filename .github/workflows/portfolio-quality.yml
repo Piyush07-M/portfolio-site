@@ -1,36 +1,37 @@
-name: Portfolio quality gates
+"name": Portfolio quality gates
 
-on:
+"on":
   pull_request:
-    branches: [master, main]
   push:
-    branches: [master, main, "feat/**"]
+    branches:
+      - master
+      - main
+      - "feat/**"
   workflow_dispatch:
 
 permissions:
   contents: read
 
-concurrency:
-  group: portfolio-quality-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   portfolio-quality:
-    name: Static checks + Chromium smoke tests
+    name: Static checks and Chromium smoke tests
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - name: Check out source
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           package-manager-cache: false
 
-      - name: Validate markup, links, metadata, accessibility safeguards and JavaScript syntax
-        run: node scripts/validate-portfolio.mjs
+      - name: Validate JavaScript files
+        run: |
+          node --check scripts/validate-portfolio.mjs
+          node --check scripts/browser-smoke.cjs
+          node scripts/validate-portfolio.mjs
 
       - name: Install isolated browser-test dependency
         run: npm install --prefix "$RUNNER_TEMP/portfolio-qa" playwright@1.64.1 --no-audit --no-fund
