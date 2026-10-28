@@ -146,12 +146,14 @@ const server = http.createServer((req, res) => {
     expect(gridBefore !== gridAfter, "Project background grid responds to scroll-linked parallax");
 
     const mock = pathvioCard.locator(".pathvio-shot-frame");
+    const mockBounds = await mock.boundingBox();
+    await desktop.mouse.move(mockBounds.x + mockBounds.width * 0.2, mockBounds.y + mockBounds.height * 0.2);
+    await desktop.waitForTimeout(100);
     const tiltBefore = await mock.evaluate((node) => getComputedStyle(node).transform);
-    const cardBounds = await pathvioCard.boundingBox();
-    await desktop.mouse.move(cardBounds.x + cardBounds.width * 0.22, cardBounds.y + cardBounds.height * 0.32);
+    await desktop.mouse.move(mockBounds.x + mockBounds.width * 0.8, mockBounds.y + mockBounds.height * 0.8);
     await desktop.waitForTimeout(120);
     const tiltAfter = await mock.evaluate((node) => getComputedStyle(node).transform);
-    expect(tiltBefore !== tiltAfter, "Pathvio product frame responds to pointer-based tilt");
+    expect(tiltBefore !== tiltAfter, "Pathvio product frame tilt responds to pointer position");
 
     await desktop.evaluate(() => window.scrollTo(0, 0));
     await desktop.mouse.move(1, 1);
