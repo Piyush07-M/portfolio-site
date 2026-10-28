@@ -91,6 +91,13 @@ const server = http.createServer((req, res) => {
       nodes.filter((node) => Number.parseFloat(getComputedStyle(node).opacity) < 0.95).length
     );
     expect(invisibleReveals === 0, "All scroll-reveal content appears after visiting each section");
+    const productImage = await desktop.locator(".pathvio-shot-frame img").evaluate((img) => ({
+      complete: img.complete,
+      naturalWidth: img.naturalWidth,
+      alt: img.alt,
+    }));
+    expect(productImage.complete && productImage.naturalWidth >= 300 && productImage.alt.length > 35,
+      "Authentic Pathvio product screenshot loads with meaningful alternative text");
     await desktop.screenshot({ path: path.join(artifacts, "desktop-full-page.png"), fullPage: true });
 
     // Automated WCAG 2.2 A/AA scan after all scroll-reveal content is visible.
