@@ -166,7 +166,12 @@ const server = http.createServer((req, res) => {
     const liveReference = await browser.newPage({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 1 });
     try {
       await liveReference.goto("https://pathvio.in/", { waitUntil: "domcontentloaded", timeout: 20000 });
-      await liveReference.waitForTimeout(1100);
+      await liveReference.waitForTimeout(700);
+      const rejectCookies = liveReference.getByRole("button", { name: /reject all/i });
+      if (await rejectCookies.count()) {
+        await rejectCookies.first().click({ timeout: 1800 }).catch(() => {});
+        await liveReference.waitForTimeout(350);
+      }
       await liveReference.screenshot({ path: path.join(artifacts, "pathvio-live-reference.png") });
       console.log("Captured authentic Pathvio homepage reference for visual review.");
     } catch (error) {
