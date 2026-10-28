@@ -38,9 +38,11 @@ npx playwright install chromium
 node scripts/browser-smoke.cjs
 ```
 
-The browser suite runs a local HTTP server, captures desktop/mobile screenshots into `qa-artifacts/`, checks navigation and responsive widths, validates the WebGL scene and its fallback, tests reduced motion, and runs a WCAG 2.2 A/AA axe scan. It also attempts to capture the live Pathvio homepage as a visual reference; that capture is non-blocking if the live site is unavailable.
+The Chromium suite runs a local HTTP server, captures screenshots into `qa-artifacts/`, checks navigation and responsive widths, validates the WebGL scene and its fallback, tests reduced motion, verifies project images, and runs WCAG 2.2 A/AA axe scans on desktop and with the mobile menu open. It also attempts to capture the live Pathvio homepage as a visual reference; that capture is non-blocking if the live site is unavailable.
 
-GitHub Actions runs the static and Chromium checks for pull requests. See the [Actions runs](https://github.com/Piyush07-M/portfolio-site/actions) for current results.
+The cross-browser suite runs layout, case-study, navigation, mobile menu, reduced-motion, and JavaScript-error checks in Chromium, Firefox, and WebKit.
+
+GitHub Actions runs the static, Chromium accessibility, and cross-browser smoke checks for pull requests. See the [Actions runs](https://github.com/Piyush07-M/portfolio-site/actions) for current results.
 
 ## Before release
 
