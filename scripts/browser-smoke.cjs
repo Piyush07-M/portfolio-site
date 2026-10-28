@@ -105,7 +105,7 @@ const server = http.createServer((req, res) => {
 
     await mobile.getByRole("button", { name: "Open navigation menu" }).click();
     expect(await mobile.locator("#menuToggle").getAttribute("aria-expanded") === "true", "Mobile menu opens and announces expanded state");
-    await mobile.getByRole("link", { name: "Selected work" }).click();
+    await mobile.locator('#navLinks a[href="#work"]').click();
     await mobile.waitForTimeout(150);
     expect(new URL(mobile.url()).hash === "#work", "Mobile navigation preserves native URL fragment");
     expect(await mobile.locator("#menuToggle").getAttribute("aria-expanded") === "false", "Mobile menu closes after navigation");
