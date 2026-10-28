@@ -1,6 +1,6 @@
-# Piyush Mandal — AI Product Builder Portfolio
+# Piyush Mandal — Product, AI & Growth Portfolio
 
-A responsive, editorial portfolio focused on AI product engineering, product strategy, and growth. The site is intentionally lightweight: the portfolio experience is served from a single HTML document, with a small set of static assets.
+A responsive, light editorial portfolio focused on AI product engineering, product strategy, and growth. Warm paper backgrounds, charcoal typography, terracotta and sage accents, and an optimized personal portrait make the introduction more human while preserving the interactive Three.js scene. The site is intentionally lightweight: the portfolio experience is served from a single HTML document, with a small set of static assets.
 
 ## Flagship work
 
@@ -19,7 +19,7 @@ python3 -m http.server 4173
 
 Then open http://127.0.0.1:4173.
 
-The site uses external runtime resources for Google Fonts, Three.js (jsDelivr), and the Hush sample catalog image (Unsplash). A CSS hero fallback is kept available if WebGL fails to initialize.
+The site uses external runtime resources for Google Fonts, Three.js (jsDelivr), and the Hush sample catalog image (Unsplash). The optimized portrait is stored at `assets/piyush-portrait.webp`. A CSS hero fallback is kept available if WebGL fails to initialize.
 
 ## Quality checks
 
