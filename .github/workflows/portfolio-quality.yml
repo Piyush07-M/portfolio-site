@@ -6,7 +6,7 @@
     branches:
       - master
       - main
-      - "feat/**"
+      # Feature branches are covered by pull_request; avoid running the same suite twice.
   workflow_dispatch:
 
 permissions:
