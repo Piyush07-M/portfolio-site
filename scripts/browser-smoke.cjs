@@ -94,6 +94,15 @@ const server = http.createServer((req, res) => {
     expect((await desktop.title()).includes("Piyush Mandal"), "Desktop document title is correct");
     expect(await desktop.locator("h1").count() === 1 && await desktop.locator("h1").isVisible(), "One visible primary heading is rendered");
     expect(await desktop.locator("#pathvio-case-study").count() === 1 && await desktop.locator("#hush-case-study").count() === 1, "Both flagship case studies render");
+    const portrait = await desktop.locator(".hero-portrait").evaluate((img) => ({
+      loaded: img.complete && img.naturalWidth >= 300,
+      alt: img.alt,
+      aspect: img.naturalWidth / img.naturalHeight,
+    }));
+    expect(portrait.loaded && portrait.alt.includes("Piyush Mandal"),
+      "Uploaded Piyush portrait loads with meaningful alternative text");
+    expect(portrait.aspect > 0.65 && portrait.aspect < 0.85,
+      "Portrait is cropped to a portrait-oriented hero ratio");
     expect(await desktop.locator(".case-flow").count() === 2, "Both product flow diagrams render");
     const stage = await desktop.locator("#visualStage").evaluate((node) => ({
       webglReady: node.dataset.webgl === "ready",
