@@ -68,7 +68,11 @@ const server = http.createServer((req, res) => {
     await desktop.waitForTimeout(1800);
 
     await desktop.keyboard.press("Tab");
-    await desktop.waitForTimeout(250); // let the skip-link focus transition finish before checking visibility
+    await desktop.waitForFunction(() => {
+      const node = document.querySelector(".skip-link");
+      const rect = node.getBoundingClientRect();
+      return document.activeElement === node && rect.top >= 0 && rect.top < innerHeight;
+    }, null, { timeout: 1800 }).catch(() => {}); // wait for the focus-only slide-in without making the test timing-dependent
     const skipLinkFocused = await desktop.evaluate(() => {
       const node = document.querySelector(".skip-link");
       const active = document.activeElement;
