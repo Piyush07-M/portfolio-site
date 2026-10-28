@@ -52,7 +52,7 @@ check(html.includes('class="case-insights') && html.includes("Evaluation plan ·
 check(html.includes("new ResizeObserver(resize)") && html.includes("webglcontextlost") && html.includes("activeScene?.traverse"), "3D scene handles responsive sizing, context loss and startup cleanup");
 check(html.includes('id="motionToggle"') && html.includes("Resume motion") && html.includes(".motion-toggle-input:checked~.marquee-track"), "A keyboard-accessible motion toggle can pause the marquee without JavaScript");
 check(html.includes('class="marquee-track" aria-hidden="true"') && html.includes("Areas of work include product thinking"), "Animated marquee has a static screen-reader equivalent and avoids repeated announcements");
-check(!/body:after\\{content:"";position:fixed;inset:0;z-index:20;pointer-events:none;opacity:\\.025/.test(html), "Global texture does not sit over all text and block automated contrast assessment");
+check(!html.includes('body:after{content:"";position:fixed;inset:0;z-index:20;pointer-events:none;opacity:.025'), "Global texture does not sit over all text and block automated contrast assessment");
 check(html.includes("stage.dataset.motionPaused=String(manuallyPaused)") && html.includes("manuallyPaused||running"), "The motion toggle also pauses and resumes the WebGL renderer");
 check(html.includes(":focus-visible"), "Keyboard focus styles are defined");
 check(html.includes("prefers-reduced-motion"), "Reduced-motion preferences are respected");
