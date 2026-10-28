@@ -84,6 +84,7 @@ const server = http.createServer((req, res) => {
     });
     console.log("Skip-link keyboard state:", JSON.stringify(skipLinkFocused));
     expect(skipLinkFocused.focused && skipLinkFocused.visible, "Keyboard-first navigation exposes the visible skip link");
+    await desktop.locator(".skip-link").evaluate((node) => node.blur()); // keep focus-only UI out of visual review captures
 
     expect((await desktop.title()).includes("Piyush Mandal"), "Desktop document title is correct");
     expect(await desktop.locator("h1").count() === 1 && await desktop.locator("h1").isVisible(), "One visible primary heading is rendered");
