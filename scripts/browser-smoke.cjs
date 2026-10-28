@@ -104,6 +104,24 @@ const server = http.createServer((req, res) => {
     const canvasBounds = await desktop.locator("#visualStage canvas").boundingBox();
     expect(Boolean(canvasBounds && canvasBounds.width > 250 && canvasBounds.height > 250),
       "Live WebGL canvas has a real, non-zero rendered viewport");
+    const motionInput = desktop.locator("#motionToggle");
+    const motionLabel = desktop.locator('label[for="motionToggle"]');
+    expect(await motionLabel.isVisible(), "User can see the pause-motion control when animation is enabled");
+    await motionLabel.click();
+    expect(await motionInput.isChecked(), "Pause-motion checkbox can be activated by pointer");
+    const pausedMotion = await desktop.evaluate(() => ({
+      marquee: getComputedStyle(document.querySelector(".marquee-track")).animationPlayState,
+      webgl: document.querySelector("#visualStage").dataset.motionPaused,
+    }));
+    expect(pausedMotion.marquee === "paused" && pausedMotion.webgl === "true",
+      "Pause-motion control stops both the marquee and WebGL animation");
+    await motionLabel.click();
+    const resumedMotion = await desktop.evaluate(() => ({
+      marquee: getComputedStyle(document.querySelector(".marquee-track")).animationPlayState,
+      webgl: document.querySelector("#visualStage").dataset.motionPaused,
+    }));
+    expect(!await motionInput.isChecked() && resumedMotion.marquee !== "paused" && resumedMotion.webgl === "false",
+      "Resume-motion control restarts motion with an announced checkbox state");
     const desktopWidth = await desktop.evaluate(() => ({ viewport: innerWidth, content: document.documentElement.scrollWidth }));
     expect(desktopWidth.content <= desktopWidth.viewport + 1, "Desktop layout has no horizontal overflow");
     await desktop.screenshot({ path: path.join(artifacts, "desktop-hero.png") });
