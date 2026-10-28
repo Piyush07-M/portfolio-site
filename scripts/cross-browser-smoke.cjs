@@ -55,17 +55,20 @@ const server = http.createServer((req, res) => {
       expect(stage.initialized || stage.fallback >= .5, entry.name + ": hero WebGL or CSS fallback");
       const wide = await page.evaluate(() => ({ viewport: innerWidth, content: document.documentElement.scrollWidth }));
       expect(wide.content <= wide.viewport + 1, entry.name + ": no desktop horizontal overflow");
+      await page.screenshot({ path: path.join(artifacts, `cross-${entry.name.toLowerCase()}-desktop.png`) });
       await page.locator('#navLinks a[href="#work"]').click();
       expect(new URL(page.url()).hash === "#work", entry.name + ": native anchor navigation");
-      await page.screenshot({ path: path.join(artifacts, `cross-${entry.name.toLowerCase()}-desktop.png`) });
 
-      const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: "reduce" });
+      const mobileOptions = { viewport: { width: 390, height: 844 }, hasTouch: true, reducedMotion: "reduce" };
+      if (entry.name !== "Firefox") mobileOptions.isMobile = true; // Playwright Firefox does not emulate the mobile meta viewport.
+      const mobile = await browser.newPage(mobileOptions);
       mobile.on("pageerror", (error) => errors.push(error.message));
       await mobile.goto("http://127.0.0.1:4174/", { waitUntil: "domcontentloaded", timeout: 45000 });
       await mobile.waitForTimeout(300);
       const narrow = await mobile.evaluate(() => ({ viewport: innerWidth, content: document.documentElement.scrollWidth }));
       expect(narrow.content <= narrow.viewport + 1, entry.name + ": 390px mobile no horizontal overflow");
       expect(await mobile.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior) === "auto", entry.name + ": reduced motion respected");
+      await mobile.screenshot({ path: path.join(artifacts, `cross-${entry.name.toLowerCase()}-mobile.png`) });
       await mobile.locator("#menuToggle").click();
       expect(await mobile.locator("#menuToggle").getAttribute("aria-expanded") === "true", entry.name + ": accessible mobile menu opens");
       await mobile.locator('#navLinks a[href="#work"]').click();
@@ -74,7 +77,6 @@ const server = http.createServer((req, res) => {
       await mobile.setViewportSize({ width: 320, height: 740 });
       const smallest = await mobile.evaluate(() => ({ viewport: innerWidth, content: document.documentElement.scrollWidth }));
       expect(smallest.content <= smallest.viewport + 1, entry.name + ": 320px narrow screen no horizontal overflow");
-      await mobile.screenshot({ path: path.join(artifacts, `cross-${entry.name.toLowerCase()}-mobile.png`) });
       expect(errors.length === 0, entry.name + ": no uncaught JavaScript errors");
       await mobile.close();
       await page.close();
