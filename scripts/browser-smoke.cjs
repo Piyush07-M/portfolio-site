@@ -120,6 +120,15 @@ const server = http.createServer((req, res) => {
     }));
     expect(productImage.complete && productImage.naturalWidth >= 300 && productImage.alt.length > 35,
       "Authentic Pathvio product screenshot loads with meaningful alternative text");
+    await desktop.waitForTimeout(900);
+    const hushImage = await desktop.locator(".catalog-product img").evaluate((img) => ({
+      loaded: img.complete && img.naturalWidth > 0,
+      fallback: img.closest(".catalog-product")?.classList.contains("image-unavailable") || false,
+      alt: img.alt,
+      naturalWidth: img.naturalWidth,
+    }));
+    expect(hushImage.alt.length > 20 && (hushImage.loaded || hushImage.fallback),
+      "Hush demo footwear image loads or displays its intentional fallback");
     await desktop.screenshot({ path: path.join(artifacts, "desktop-full-page.png"), fullPage: true });
 
     // Automated WCAG 2.2 A/AA scan after all scroll-reveal content is visible.
