@@ -20,6 +20,7 @@ const mimeTypes = {
   ".svg": "image/svg+xml",
   ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
+  ".webp": "image/webp",
 };
 const server = http.createServer((req, res) => {
   let pathname;
@@ -177,7 +178,22 @@ const server = http.createServer((req, res) => {
           })),
         })),
         passes: result.passes.length,
-        incomplete: result.incomplete.map((item) => ({ id: item.id, help: item.help })),
+        incomplete: result.incomplete.map((item) => ({
+          id: item.id,
+          impact: item.impact,
+          help: item.help,
+          description: item.description,
+          helpUrl: item.helpUrl,
+          tags: item.tags,
+          nodes: item.nodes.map((node) => ({
+            target: node.target,
+            html: node.html,
+            summary: node.failureSummary,
+            any: node.any.map((check) => ({ id: check.id, message: check.message, data: check.data })),
+            all: node.all.map((check) => ({ id: check.id, message: check.message, data: check.data })),
+            none: node.none.map((check) => ({ id: check.id, message: check.message, data: check.data })),
+          })),
+        })),
       };
     });
     fs.writeFileSync(path.join(artifacts, "accessibility-report.json"), JSON.stringify(accessibility, null, 2));
