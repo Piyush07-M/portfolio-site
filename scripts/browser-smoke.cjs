@@ -134,6 +134,28 @@ const server = http.createServer((req, res) => {
     }));
     expect(hushImage.alt.length > 20 && (hushImage.loaded || hushImage.fallback),
       "Hush demo footwear image loads or displays its intentional fallback");
+
+    const pathvioCard = desktop.locator(".project-card").first();
+    await pathvioCard.scrollIntoViewIfNeeded();
+    await desktop.waitForTimeout(180);
+    const backgroundGrid = pathvioCard.locator(".visual-grid");
+    const gridBefore = await backgroundGrid.evaluate((node) => getComputedStyle(node).transform);
+    await desktop.evaluate(() => window.scrollBy(0, 120));
+    await desktop.waitForTimeout(120);
+    const gridAfter = await backgroundGrid.evaluate((node) => getComputedStyle(node).transform);
+    expect(gridBefore !== gridAfter, "Project background grid responds to scroll-linked parallax");
+
+    const mock = pathvioCard.locator(".pathvio-shot-frame");
+    const tiltBefore = await mock.evaluate((node) => getComputedStyle(node).transform);
+    const cardBounds = await pathvioCard.boundingBox();
+    await desktop.mouse.move(cardBounds.x + cardBounds.width * 0.22, cardBounds.y + cardBounds.height * 0.32);
+    await desktop.waitForTimeout(120);
+    const tiltAfter = await mock.evaluate((node) => getComputedStyle(node).transform);
+    expect(tiltBefore !== tiltAfter, "Pathvio product frame responds to pointer-based tilt");
+
+    await desktop.evaluate(() => window.scrollTo(0, 0));
+    await desktop.mouse.move(1, 1);
+    await desktop.waitForTimeout(220);
     await desktop.screenshot({ path: path.join(artifacts, "desktop-full-page.png"), fullPage: true });
 
     // Automated WCAG 2.2 A/AA scan after all scroll-reveal content is visible.
