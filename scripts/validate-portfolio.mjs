@@ -48,6 +48,8 @@ check(html.includes("case-flow") && html.includes("Guided product loop") && html
 check(html.includes("application/ld+json"), "Structured Person metadata is included");
 check(html.includes('property="og:title"') && html.includes('name="description"'), "Search/social metadata is present");
 check(existsSync(resolve(root, "assets/portfolio-mark.svg")), "Favicon asset exists");
+check(existsSync(resolve(root, "assets/pathvio-product-preview.webp")), "Authentic Pathvio product screenshot asset exists");
+check(html.includes('src="./assets/pathvio-product-preview.webp"') && /<img[^>]+alt="Screenshot of the Pathvio homepage/.test(html), "Authentic product screenshot is embedded with useful alternative text");
 check(!html.includes("github.com/Piyush07-M/Pathvio") && !html.includes("github.com/Piyush07-M/Ecommerce-AI-Assistant"), "Public case studies do not link to private source repositories");
 check(html.includes("249 tests passing across 42 pytest suites") && html.includes("not independently rerun for this portfolio"), "Repository-reported evidence is qualified rather than presented as a new test run");
 
